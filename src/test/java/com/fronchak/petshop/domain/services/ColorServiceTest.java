@@ -1,14 +1,13 @@
 package com.fronchak.petshop.domain.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -20,8 +19,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.fronchak.petshop.domain.dtos.color.InsertColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputAllColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputColorDTO;
+import com.fronchak.petshop.domain.dtos.color.UpdateColorDTO;
 import com.fronchak.petshop.domain.entities.Color;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.petshop.domain.mappers.ColorMapper;
@@ -80,5 +81,44 @@ public class ColorServiceTest {
 		CustomizeAsserts.assertPageOutputAllColorDTO(resultPage);
 		verify(repository, times(1)).findAll(pageable);
 		verify(mapper, times(1)).convertEntityPageToOutputAllDTOPage(entityPage);
+	}
+	
+	@Test
+	public void saveShouldReturnDTO() {
+		InsertColorDTO insertDTO = ColorMocksFactory.mockInsertColorDTO(1);
+		Color insertEntity = new Color();
+		Color entity = ColorMocksFactory.mockColor();
+		OutputColorDTO outputDTO = ColorMocksFactory.mockOutputColorDTO();
+		
+		doNothing().when(mapper).copyInputDTOToEntity(insertDTO, insertEntity);
+		when(repository.save(insertEntity)).thenReturn(entity);
+		when(mapper.convertEntityToOutputDTO(entity)).thenReturn(outputDTO);
+		
+		OutputColorDTO result = service.save(insertDTO);
+		CustomizeAsserts.assertOutputColorDTO(result);
+		verify(repository, times(1)).save(insertEntity);
+		verify(mapper, times(1)).copyInputDTOToEntity(insertDTO, insertEntity);
+		verify(mapper, times(1)).convertEntityToOutputDTO(entity);
+	}
+	
+	@Test
+	public void updateShouldReturnDTOWhenIdExists() {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO(1);
+		Color updateEntity = ColorMocksFactory.mockColor(1);
+		Color entity = ColorMocksFactory.mockColor();
+		OutputColorDTO dto = ColorMocksFactory.mockOutputColorDTO();
+		
+		when(repository.getReferenceById(VALID_ID)).thenReturn(updateEntity);
+		doNothing().when(mapper).copyInputDTOToEntity(updateDTO, updateEntity);
+		when(repository.save(updateEntity)).thenReturn(entity);
+		when(mapper.convertEntityToOutputDTO(entity)).thenReturn(dto);
+		
+		OutputColorDTO result = service.update(updateDTO, VALID_ID);
+		
+		CustomizeAsserts.assertOutputColorDTO(result);
+		verify(repository, times(1)).getReferenceById(VALID_ID);
+		verify(mapper, times(1)).copyInputDTOToEntity(updateDTO, updateEntity);
+		verify(repository, times(1)).save(updateEntity);
+		verify(mapper, times(1)).convertEntityToOutputDTO(entity);
 	}
 }

@@ -6,8 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fronchak.petshop.domain.dtos.color.InsertColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputAllColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputColorDTO;
+import com.fronchak.petshop.domain.dtos.color.UpdateColorDTO;
 import com.fronchak.petshop.domain.entities.Color;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.petshop.domain.mappers.ColorMapper;
@@ -33,5 +35,21 @@ public class ColorService {
 	public Page<OutputAllColorDTO> findAllPaged(Pageable pageable) {
 		Page<Color> entityPage = repository.findAll(pageable);
 		return mapper.convertEntityPageToOutputAllDTOPage(entityPage);
+	}
+	
+	@Transactional
+	public OutputColorDTO save(InsertColorDTO dto) {
+		Color entity = new Color();
+		mapper.copyInputDTOToEntity(dto, entity);
+		entity = repository.save(entity);
+		return mapper.convertEntityToOutputDTO(entity);
+	}
+	
+	@Transactional
+	public OutputColorDTO update(UpdateColorDTO dto, Long id) {
+		Color entity = repository.getReferenceById(id);
+		mapper.copyInputDTOToEntity(dto, entity);
+		entity = repository.save(entity);
+		return mapper.convertEntityToOutputDTO(entity);
 	}
 }
