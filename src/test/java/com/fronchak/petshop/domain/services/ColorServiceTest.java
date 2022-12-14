@@ -1,8 +1,10 @@
 package com.fronchak.petshop.domain.services;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -10,10 +12,14 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +30,7 @@ import com.fronchak.petshop.domain.dtos.color.OutputAllColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputColorDTO;
 import com.fronchak.petshop.domain.dtos.color.UpdateColorDTO;
 import com.fronchak.petshop.domain.entities.Color;
+import com.fronchak.petshop.domain.exceptions.DatabaseException;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.petshop.domain.mappers.ColorMapper;
 import com.fronchak.petshop.domain.repositories.ColorRepository;
@@ -120,5 +127,40 @@ public class ColorServiceTest {
 		verify(mapper, times(1)).copyInputDTOToEntity(updateDTO, updateEntity);
 		verify(repository, times(1)).save(updateEntity);
 		verify(mapper, times(1)).convertEntityToOutputDTO(entity);
+	}
+	
+	@Test
+	public void updateShouldReturnResourceNotFoundExceptionWhenIdDoesNotExist() {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		when(repository.getReferenceById(INVALID_ID)).thenThrow(EntityNotFoundException.class);
+		
+		assertThrows(ResourceNotFoundException.class, () -> service.update(updateDTO, INVALID_ID));
+		verify(mapper, never()).copyInputDTOToEntity(any(), any());
+		verify(repository, never()).save(any());
+		verify(mapper, never()).convertEntityToOutputDTO(any());
+	}
+	
+	@Test
+	public void deleteShouldNotThrowExceptionWhenIdExists() {
+		doNothing().when(repository).deleteById(VALID_ID);
+		
+		assertDoesNotThrow(() -> service.delete(VALID_ID));
+		verify(repository, times(1)).deleteById(VALID_ID);
+	}
+	
+	@Test
+	public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(INVALID_ID);
+
+		assertThrows(ResourceNotFoundException.class, () -> service.delete(INVALID_ID));
+		verify(repository, times(1)).deleteById(INVALID_ID);
+	}
+	
+	@Test
+	public void deleteShouldThrowDatabaseExceptionWhenIdIsDependent() {
+		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(DEPENDENT_ID);
+		
+		assertThrows(DatabaseException.class, () -> service.delete(DEPENDENT_ID));
+		verify(repository, times(1)).deleteById(DEPENDENT_ID);
 	}
 }

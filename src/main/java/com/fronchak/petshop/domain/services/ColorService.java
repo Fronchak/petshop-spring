@@ -1,6 +1,10 @@
 package com.fronchak.petshop.domain.services;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,7 @@ import com.fronchak.petshop.domain.dtos.color.OutputAllColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputColorDTO;
 import com.fronchak.petshop.domain.dtos.color.UpdateColorDTO;
 import com.fronchak.petshop.domain.entities.Color;
+import com.fronchak.petshop.domain.exceptions.DatabaseException;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.petshop.domain.mappers.ColorMapper;
 import com.fronchak.petshop.domain.repositories.ColorRepository;
@@ -47,9 +52,26 @@ public class ColorService {
 	
 	@Transactional
 	public OutputColorDTO update(UpdateColorDTO dto, Long id) {
-		Color entity = repository.getReferenceById(id);
-		mapper.copyInputDTOToEntity(dto, entity);
-		entity = repository.save(entity);
-		return mapper.convertEntityToOutputDTO(entity);
+		try {
+			Color entity = repository.getReferenceById(id);
+			mapper.copyInputDTOToEntity(dto, entity);
+			entity = repository.save(entity);
+			return mapper.convertEntityToOutputDTO(entity);			
+		}
+		catch(EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Color not found by ID: " + id);
+		}
+	}
+	
+	public void delete(Long id) {
+		try {
+			repository.deleteById(id);			
+		}
+		catch(EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException("Color not found by ID: " + id);
+		}
+		catch(DataIntegrityViolationException e) {
+			throw new DatabaseException("Integrity exception");
+		}
 	}
 }
