@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import com.fronchak.petshop.domain.dtos.color.InsertColorDTO;
+import com.fronchak.petshop.domain.dtos.color.OutputAllColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputColorDTO;
 import com.fronchak.petshop.domain.dtos.color.UpdateColorDTO;
 import com.fronchak.petshop.domain.entities.Color;
@@ -89,5 +90,24 @@ public class ColorMocksFactory {
 		list.add(mockColor(1));
 		list.add(mockColor(2));
 		return list;
+	}
+	
+	public static Page<OutputAllColorDTO> mockOutputAllColorDTOPage() {
+		return new PageImpl<>(mockOutputAllColorDTOList());
+	}
+	
+	public static List<OutputAllColorDTO> mockOutputAllColorDTOList() {
+		List<OutputAllColorDTO> list = new ArrayList<>();
+		list.add(mockOutputAllColorDTO(0));
+		list.add(mockOutputAllColorDTO(1));
+		list.add(mockOutputAllColorDTO(2));
+		return list;
+	}
+	
+	public static OutputAllColorDTO mockOutputAllColorDTO(int i) {
+		OutputAllColorDTO mock = new OutputAllColorDTO();
+		mock.setId(mockId(i));
+		mock.setName(mockName(i));
+		return mock;
 	}
 }
