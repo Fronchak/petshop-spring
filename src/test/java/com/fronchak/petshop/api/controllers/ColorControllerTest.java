@@ -27,8 +27,10 @@ import com.fronchak.petshop.domain.dtos.color.InsertColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputAllColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputColorDTO;
 import com.fronchak.petshop.domain.dtos.color.UpdateColorDTO;
+import com.fronchak.petshop.domain.entities.Color;
 import com.fronchak.petshop.domain.exceptions.DatabaseException;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
+import com.fronchak.petshop.domain.repositories.ColorRepository;
 import com.fronchak.petshop.domain.services.ColorService;
 import com.fronchak.petshop.test.factories.ColorMocksFactory;
 
@@ -46,6 +48,9 @@ public class ColorControllerTest {
 	
 	@MockBean
 	private ColorService service;
+	
+	@MockBean
+	private ColorRepository repository;
 	
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -304,5 +309,53 @@ public class ColorControllerTest {
 		result.andExpect(status().isUnprocessableEntity());
 		result.andExpect(jsonPath("$.errors[0].fieldName").value("hex"));
 		result.andExpect(jsonPath("$.errors[0].message").value("Hex cannot be empty"));
+	}
+	
+	@Test
+	public void saveShouldReturnUnprocessableEntityWhenNameIsNotUnique() throws Exception {
+		InsertColorDTO insertDTO = ColorMocksFactory.mockInsertColorDTO();
+		when(repository.findByName(insertDTO.getName())).thenReturn(new Color());
+		
+		String body = objectMapper.writeValueAsString(insertDTO);
+		
+		ResultActions result = mockMvc.perform(post("/api/colors")
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.errors[0].message").value("There is another color with the same name saved"));
+	}
+	
+	@Test
+	public void saveShouldReturnUnprocessableEntityWhenRgbIsNotUnique() throws Exception {
+		InsertColorDTO insertDTO = ColorMocksFactory.mockInsertColorDTO();
+		when(repository.findByRgb(insertDTO.getRgb())).thenReturn(new Color());
+		
+		String body = objectMapper.writeValueAsString(insertDTO);
+		
+		ResultActions result = mockMvc.perform(post("/api/colors")
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.errors[0].message").value("There is another color with the same rgb saved"));
+	}
+	
+	@Test
+	public void saveShouldReturnUnprocessableEntityWhenHexIsNotUnique() throws Exception {
+		InsertColorDTO insertDTO = ColorMocksFactory.mockInsertColorDTO();
+		when(repository.findByHex(insertDTO.getHex())).thenReturn(new Color());
+		
+		String body = objectMapper.writeValueAsString(insertDTO);
+		
+		ResultActions result = mockMvc.perform(post("/api/colors")
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.errors[0].message").value("There is another color with the same hex saved"));
 	}
 }

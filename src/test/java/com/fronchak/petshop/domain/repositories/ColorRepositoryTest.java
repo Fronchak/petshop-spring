@@ -56,4 +56,32 @@ public class ColorRepositoryTest {
 		Color result = repository.findByName("AAA");
 		assertNull(result);
 	}
+	
+	@Test
+	public void findByRgbShouldReturnEntityWhenRgbExists() {
+		Color result = repository.findByRgb("(0,0,0)");
+		assertNotNull(result);
+		assertEquals("Black", result.getName());
+		assertEquals("#000000", result.getHex());
+	}
+	
+	@Test
+	public void findByRgbShouldReturnNullWhenRgbDoesNotExist() {
+		Color result = repository.findByRgb("()");
+		assertNull(result);
+	}
+	
+	@Test
+	public void findByHexShouldReturnEntityWhenHexExists() {
+		Color result = repository.findByHex("#FFFFFF");
+		assertNotNull(result);
+		assertEquals("White", result.getName());
+		assertEquals("(255,255,255)", result.getRgb());
+	}
+	
+	@Test
+	public void findByHexShouldReturnNullWhenHexDoesNotExist() {
+		Color result = repository.findByHex("###");
+		assertNull(result);
+	}
 }

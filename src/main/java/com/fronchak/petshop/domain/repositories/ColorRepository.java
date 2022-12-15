@@ -9,4 +9,8 @@ import com.fronchak.petshop.domain.entities.Color;
 public interface ColorRepository extends JpaRepository<Color, Long> {
 
 	Color findByName(String name);
+	
+	Color findByRgb(String rgb);
+	
+	Color findByHex(String hex);
 }
