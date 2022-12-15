@@ -156,23 +156,86 @@ public class ColorControllerTest {
 	}
 	
 	@Test
-	public void updateShouldReturnDTOAndSuccessWhenIdExists() throws Exception {
+	public void updateShouldReturnDTOAndSuccessWhenIdExistsAndThereIsNoEntityWithTheSameValues() throws Exception {
 		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
 		OutputColorDTO dto = ColorMocksFactory.mockOutputColorDTO();
+		
+		when(repository.findByName(updateDTO.getName())).thenReturn(null);
+		when(repository.findByHex(updateDTO.getHex())).thenReturn(null);
+		when(repository.findByRgb(updateDTO.getRgb())).thenReturn(null);
 		when(service.update(any(UpdateColorDTO.class), eq(VALID_ID))).thenReturn(dto);
 		
 		String body = objectMapper.writeValueAsString(updateDTO);
-		
 		ResultActions result = mockMvc.perform(put("/api/colors/{id}", VALID_ID)
 				.accept(mediaType)
 				.content(body)
 				.contentType(mediaType));
-		
+		assertOutputColorDTO(result);
+	}
+	
+	private void assertOutputColorDTO(ResultActions result) throws Exception {
 		result.andExpect(status().isOk());
 		result.andExpect(jsonPath("$.id").value(0L));
 		result.andExpect(jsonPath("$.name").value("Mock name 0"));
 		result.andExpect(jsonPath("$.hex").value("Mock hex 0"));
 		result.andExpect(jsonPath("$.rgb").value("Mock rgb 0"));
+	}
+	
+	@Test
+	public void updateShouldReturnDTOAndSuccessWhenIdExistsAndEntityWithTheSameNameIsEntityBeenUpdate() throws Exception {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		OutputColorDTO dto = ColorMocksFactory.mockOutputColorDTO();
+		Color entity = ColorMocksFactory.mockColor(1);
+		
+		when(repository.findByName(updateDTO.getName())).thenReturn(entity);
+		when(repository.findByHex(updateDTO.getHex())).thenReturn(null);
+		when(repository.findByRgb(updateDTO.getRgb())).thenReturn(null);
+		when(service.update(any(UpdateColorDTO.class), eq(VALID_ID))).thenReturn(dto);
+		
+		String body = objectMapper.writeValueAsString(updateDTO);
+		ResultActions result = mockMvc.perform(put("/api/colors/{id}", VALID_ID)
+				.accept(mediaType)
+				.content(body)
+				.contentType(mediaType));
+		assertOutputColorDTO(result);
+	}
+	
+	@Test
+	public void updateShouldReturnDTOAndSuccessWhenIdExistsAndEntityWithTheSameHexIsEntityBeenUpdate() throws Exception {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		OutputColorDTO dto = ColorMocksFactory.mockOutputColorDTO();
+		Color entity = ColorMocksFactory.mockColor(1);
+		
+		when(repository.findByName(updateDTO.getName())).thenReturn(null);
+		when(repository.findByHex(updateDTO.getHex())).thenReturn(entity);
+		when(repository.findByRgb(updateDTO.getRgb())).thenReturn(null);
+		when(service.update(any(UpdateColorDTO.class), eq(VALID_ID))).thenReturn(dto);
+		
+		String body = objectMapper.writeValueAsString(updateDTO);
+		ResultActions result = mockMvc.perform(put("/api/colors/{id}", VALID_ID)
+				.accept(mediaType)
+				.content(body)
+				.contentType(mediaType));
+		assertOutputColorDTO(result);
+	}
+	
+	@Test
+	public void updateShouldReturnDTOAndSuccessWhenIdExistsAndEntityWithTheSameRgbIsEntityBeenUpdate() throws Exception {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		OutputColorDTO dto = ColorMocksFactory.mockOutputColorDTO();
+		Color entity = ColorMocksFactory.mockColor(1);
+		
+		when(repository.findByName(updateDTO.getName())).thenReturn(null);
+		when(repository.findByHex(updateDTO.getHex())).thenReturn(null);
+		when(repository.findByRgb(updateDTO.getRgb())).thenReturn(entity);
+		when(service.update(any(UpdateColorDTO.class), eq(VALID_ID))).thenReturn(dto);
+		
+		String body = objectMapper.writeValueAsString(updateDTO);
+		ResultActions result = mockMvc.perform(put("/api/colors/{id}", VALID_ID)
+				.accept(mediaType)
+				.content(body)
+				.contentType(mediaType));
+		assertOutputColorDTO(result);
 	}
 	
 	@Test
@@ -204,6 +267,10 @@ public class ColorControllerTest {
 				.contentType(mediaType)
 				.accept(mediaType));
 		
+		assertUnproccesableEntityAndFieldNameInvalid(result);
+	}
+	
+	private void assertUnproccesableEntityAndFieldNameInvalid(ResultActions result) throws Exception {
 		result.andExpect(status().isUnprocessableEntity());
 		result.andExpect(jsonPath("$.errors[0].fieldName").value("name"));
 		result.andExpect(jsonPath("$.errors[0].message").value("Name cannot be empty"));
@@ -221,13 +288,11 @@ public class ColorControllerTest {
 				.contentType(mediaType)
 				.accept(mediaType));
 		
-		result.andExpect(status().isUnprocessableEntity());
-		result.andExpect(jsonPath("$.errors[0].fieldName").value("name"));
-		result.andExpect(jsonPath("$.errors[0].message").value("Name cannot be empty"));
+		assertUnproccesableEntityAndFieldNameInvalid(result);
 	}
 	
 	@Test
-	public void saveShouldReturnUnprecessableEntityWhenRgbIsBlank() throws Exception {
+	public void saveShouldReturnUnprocessableEntityWhenRgbIsBlank() throws Exception {
 		InsertColorDTO insertDTO = ColorMocksFactory.mockInsertColorDTO();
 		insertDTO.setRgb("  ");
 		
@@ -238,6 +303,10 @@ public class ColorControllerTest {
 				.contentType(mediaType)
 				.accept(mediaType));
 		
+		assertUnprocessableEntityAndFieldRgbInvalid(result);
+	}
+	
+	private void assertUnprocessableEntityAndFieldRgbInvalid(ResultActions result) throws Exception {
 		result.andExpect(status().isUnprocessableEntity());
 		result.andExpect(jsonPath("$.errors[0].fieldName").value("rgb"));
 		result.andExpect(jsonPath("$.errors[0].message").value("Rgb cannot be empty"));
@@ -255,11 +324,15 @@ public class ColorControllerTest {
 				.contentType(mediaType)
 				.accept(mediaType));
 		
+		assertUnprocessableEntityAndFieldHexInvalid(result);
+	}
+	
+	private void assertUnprocessableEntityAndFieldHexInvalid(ResultActions result) throws Exception {
 		result.andExpect(status().isUnprocessableEntity());
 		result.andExpect(jsonPath("$.errors[0].fieldName").value("hex"));
 		result.andExpect(jsonPath("$.errors[0].message").value("Hex cannot be empty"));
 	}
-	
+	 
 	@Test
 	public void updateShouldReturnUnprocessableEntityWhenNameIsBlank() throws Exception {
 		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
@@ -272,9 +345,7 @@ public class ColorControllerTest {
 				.contentType(mediaType)
 				.accept(mediaType));
 		
-		result.andExpect(status().isUnprocessableEntity());
-		result.andExpect(jsonPath("$.errors[0].fieldName").value("name"));
-		result.andExpect(jsonPath("$.errors[0].message").value("Name cannot be empty"));
+		assertUnproccesableEntityAndFieldNameInvalid(result);
 	}
 	
 	@Test
@@ -289,9 +360,7 @@ public class ColorControllerTest {
 				.contentType(mediaType)
 				.accept(mediaType));
 		
-		result.andExpect(status().isUnprocessableEntity());
-		result.andExpect(jsonPath("$.errors[0].fieldName").value("rgb"));
-		result.andExpect(jsonPath("$.errors[0].message").value("Rgb cannot be empty"));
+		assertUnprocessableEntityAndFieldRgbInvalid(result);
 	}
 	
 	@Test
@@ -306,9 +375,7 @@ public class ColorControllerTest {
 				.contentType(mediaType)
 				.accept(mediaType));
 		
-		result.andExpect(status().isUnprocessableEntity());
-		result.andExpect(jsonPath("$.errors[0].fieldName").value("hex"));
-		result.andExpect(jsonPath("$.errors[0].message").value("Hex cannot be empty"));
+		assertUnprocessableEntityAndFieldHexInvalid(result);
 	}
 	
 	@Test
@@ -357,5 +424,42 @@ public class ColorControllerTest {
 		
 		result.andExpect(status().isUnprocessableEntity());
 		result.andExpect(jsonPath("$.errors[0].message").value("There is another color with the same hex saved"));
+	}
+	
+	@Test
+	public void updateShouldReturnUnprocessableEntityWhenNameInNotUnique() throws Exception {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		Color color = ColorMocksFactory.mockColor();
+		when(repository.findByName(updateDTO.getName())).thenReturn(color);
+		
+		String body = objectMapper.writeValueAsString(updateDTO);
+		
+		ResultActions result = mockMvc.perform(put("/api/colors/{id}", VALID_ID)
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.status").value(422));
+		result.andExpect(jsonPath("$.errors[0].message").value("There is another color with the same name saved"));
+	}
+	
+	@Test
+	public void updateShouldReturnSuccessWhenA() throws Exception {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		OutputColorDTO dto = ColorMocksFactory.mockOutputColorDTO();
+		Color color = ColorMocksFactory.mockColor(1);
+		
+		when(repository.findByName(updateDTO.getName())).thenReturn(color);
+		when(service.update(any(UpdateColorDTO.class), eq(VALID_ID))).thenReturn(dto);
+		
+		String body = objectMapper.writeValueAsString(updateDTO);
+		
+		ResultActions result = mockMvc.perform(put("/api/colors/{id}", VALID_ID)
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isOk());
 	}
 }
