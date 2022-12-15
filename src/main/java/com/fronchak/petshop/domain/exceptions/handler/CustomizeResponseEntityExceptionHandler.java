@@ -4,17 +4,19 @@ import java.time.Instant;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.fronchak.petshop.domain.exceptions.DatabaseException;
 import com.fronchak.petshop.domain.exceptions.ExceptionResponse;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
+import com.fronchak.petshop.domain.exceptions.ValidationExceptionResponse;
 
 @RestControllerAdvice
-public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+public class CustomizeResponseEntityExceptionHandler {
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ExceptionResponse> handleResourceNotFoundException(
@@ -39,6 +41,24 @@ public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExcep
 	public ResponseEntity<ExceptionResponse> handleDatabaseException(DatabaseException e, WebRequest request) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ExceptionResponse response = makeResponse(e, request, status, DatabaseException.getError());
+		return ResponseEntity.status(status).body(response);
+	}
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ValidationExceptionResponse> handleMethodArgumentNotValidException(
+			MethodArgumentNotValidException e, WebRequest request) {
+		HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+		ValidationExceptionResponse response = new ValidationExceptionResponse();
+		response.setTimestamp(Instant.now());
+		response.setError("Validation error");
+		response.setStatus(status.value());
+		response.setMessage(e.getMessage());
+		response.setPath(request.getDescription(false));
+		
+		for(FieldError field : e.getBindingResult().getFieldErrors()) {
+			response.addError(field.getField(), field.getDefaultMessage());
+		}
+		
 		return ResponseEntity.status(status).body(response);
 	}
 }

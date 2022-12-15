@@ -1,11 +1,14 @@
 package com.fronchak.petshop.api.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,8 +23,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fronchak.petshop.domain.dtos.color.InsertColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputAllColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputColorDTO;
+import com.fronchak.petshop.domain.dtos.color.UpdateColorDTO;
 import com.fronchak.petshop.domain.exceptions.DatabaseException;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.petshop.domain.services.ColorService;
@@ -124,5 +129,180 @@ public class ColorControllerTest {
 		result.andExpect(status().isBadRequest());
 		result.andExpect(jsonPath("$.status").value(400));
 		result.andExpect(jsonPath("$.error").value("Integrity error"));
+	}
+	
+	@Test
+	public void saveShouldReturnDTOAndCreated() throws Exception {
+		InsertColorDTO insertDTO = ColorMocksFactory.mockInsertColorDTO();
+		OutputColorDTO dto = ColorMocksFactory.mockOutputColorDTO();
+		String body = objectMapper.writeValueAsString(insertDTO);
+		when(service.save(any(InsertColorDTO.class))).thenReturn(dto);
+		
+		ResultActions result = mockMvc.perform(post("/api/colors")
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isCreated());
+		result.andExpect(jsonPath("$.id").value(0L));
+		result.andExpect(jsonPath("$.name").value("Mock name 0"));
+		result.andExpect(jsonPath("$.hex").value("Mock hex 0"));
+		result.andExpect(jsonPath("$.rgb").value("Mock rgb 0"));
+	}
+	
+	@Test
+	public void updateShouldReturnDTOAndSuccessWhenIdExists() throws Exception {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		OutputColorDTO dto = ColorMocksFactory.mockOutputColorDTO();
+		when(service.update(any(UpdateColorDTO.class), eq(VALID_ID))).thenReturn(dto);
+		
+		String body = objectMapper.writeValueAsString(updateDTO);
+		
+		ResultActions result = mockMvc.perform(put("/api/colors/{id}", VALID_ID)
+				.accept(mediaType)
+				.content(body)
+				.contentType(mediaType));
+		
+		result.andExpect(status().isOk());
+		result.andExpect(jsonPath("$.id").value(0L));
+		result.andExpect(jsonPath("$.name").value("Mock name 0"));
+		result.andExpect(jsonPath("$.hex").value("Mock hex 0"));
+		result.andExpect(jsonPath("$.rgb").value("Mock rgb 0"));
+	}
+	
+	@Test
+	public void updateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		when(service.update(any(UpdateColorDTO.class), eq(INVALID_ID))).thenThrow(ResourceNotFoundException.class);
+		
+		String body = objectMapper.writeValueAsString(updateDTO);
+		
+		ResultActions result = mockMvc.perform(put("/api/colors/{id}", INVALID_ID)
+				.accept(mediaType)
+				.content(body)
+				.contentType(mediaType));
+		
+		result.andExpect(status().isNotFound());
+		result.andExpect(jsonPath("$.status").value(404));
+		result.andExpect(jsonPath("$.error").value("Resource not found"));
+	}
+	
+	@Test
+	public void saveShouldReturnUnprocessableEntityWhenNameIsNull() throws Exception {
+		InsertColorDTO insertDTO = ColorMocksFactory.mockInsertColorDTO();
+		insertDTO.setName(null);
+		
+		String body = objectMapper.writeValueAsString(insertDTO);
+		
+		ResultActions result = mockMvc.perform(post("/api/colors")
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("name"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Name cannot be empty"));
+	}
+	
+	@Test
+	public void saveShouldReturnUnprocessableEntityWhenNameIsBlank() throws Exception {
+		InsertColorDTO insertDTO = ColorMocksFactory.mockInsertColorDTO();
+		insertDTO.setName("  ");
+		
+		String body = objectMapper.writeValueAsString(insertDTO);
+		
+		ResultActions result = mockMvc.perform(post("/api/colors")
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("name"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Name cannot be empty"));
+	}
+	
+	@Test
+	public void saveShouldReturnUnprecessableEntityWhenRgbIsBlank() throws Exception {
+		InsertColorDTO insertDTO = ColorMocksFactory.mockInsertColorDTO();
+		insertDTO.setRgb("  ");
+		
+		String body = objectMapper.writeValueAsString(insertDTO);
+		
+		ResultActions result = mockMvc.perform(post("/api/colors")
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("rgb"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Rgb cannot be empty"));
+	}
+	
+	@Test
+	public void saveShouldReturnUnprecessableEntityWhenHexIsBlank() throws Exception {
+		InsertColorDTO insertDTO = ColorMocksFactory.mockInsertColorDTO();
+		insertDTO.setHex("  ");
+		
+		String body = objectMapper.writeValueAsString(insertDTO);
+		
+		ResultActions result = mockMvc.perform(post("/api/colors")
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("hex"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Hex cannot be empty"));
+	}
+	
+	@Test
+	public void updateShouldReturnUnprocessableEntityWhenNameIsBlank() throws Exception {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		updateDTO.setName("  ");
+		
+		String body = objectMapper.writeValueAsString(updateDTO);
+		
+		ResultActions result = mockMvc.perform(put("/api/colors/{id}", VALID_ID)
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("name"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Name cannot be empty"));
+	}
+	
+	@Test
+	public void updateShouldReturnUnprocessableEntityWhenRgbIsBlank() throws Exception {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		updateDTO.setRgb("  ");
+		
+		String body = objectMapper.writeValueAsString(updateDTO);
+		
+		ResultActions result = mockMvc.perform(put("/api/colors/{id}", VALID_ID)
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("rgb"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Rgb cannot be empty"));
+	}
+	
+	@Test
+	public void updateShouldReturnUnprocessableEntityWhenHexIsBlank() throws Exception {
+		UpdateColorDTO updateDTO = ColorMocksFactory.mockUpdateColorDTO();
+		updateDTO.setHex("  ");
+		
+		String body = objectMapper.writeValueAsString(updateDTO);
+		
+		ResultActions result = mockMvc.perform(put("/api/colors/{id}", VALID_ID)
+				.content(body)
+				.contentType(mediaType)
+				.accept(mediaType));
+		
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("hex"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Hex cannot be empty"));
 	}
 }
