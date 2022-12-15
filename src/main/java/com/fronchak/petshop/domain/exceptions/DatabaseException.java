@@ -7,4 +7,8 @@ public class DatabaseException extends RuntimeException {
 	public DatabaseException(String msg) {
 		super(msg);
 	}
+	
+	public static String getError() {
+		return "Integrity error";
+	}
 }
