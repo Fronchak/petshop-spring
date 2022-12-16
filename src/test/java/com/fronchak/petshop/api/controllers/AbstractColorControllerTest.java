@@ -15,7 +15,7 @@ import com.fronchak.petshop.domain.repositories.ColorRepository;
 import com.fronchak.petshop.domain.services.ColorService;
 
 @WebMvcTest(ColorController.class)
-public class AbstractColorControllerTest {
+public abstract class AbstractColorControllerTest {
 
 	protected Long VALID_ID = 1L;
 	protected Long INVALID_ID = 2L;
