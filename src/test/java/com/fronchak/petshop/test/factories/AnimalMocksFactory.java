@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import com.fronchak.petshop.domain.dtos.animal.InputAnimalDTO;
 import com.fronchak.petshop.domain.dtos.animal.InsertAnimalDTO;
 import com.fronchak.petshop.domain.dtos.animal.OutputAllAnimalDTO;
+import com.fronchak.petshop.domain.dtos.animal.OutputAnimalDTO;
 import com.fronchak.petshop.domain.dtos.animal.UpdateAnimalDTO;
 import com.fronchak.petshop.domain.entities.Animal;
 
@@ -90,6 +91,18 @@ public class AnimalMocksFactory {
 		OutputAllAnimalDTO mock = new OutputAllAnimalDTO();
 		mock.setId(mockId(i));
 		mock.setName(mockName(i));
+		return mock;
+	}
+	
+	public static OutputAnimalDTO mockOutputAnimalDTO() {
+		return mockOutputAnimalDTO(0);
+	}
+	
+	public static OutputAnimalDTO mockOutputAnimalDTO(int i) {
+		OutputAnimalDTO mock = new OutputAnimalDTO();
+		mock.setId(mockId(i));
+		mock.setName(mockName(i));
+		mock.setDescription(mockDescription(i));
 		return mock;
 	}
 }

@@ -17,6 +17,7 @@ import com.fronchak.petshop.domain.dtos.animal.OutputAnimalDTO;
 import com.fronchak.petshop.domain.dtos.animal.UpdateAnimalDTO;
 import com.fronchak.petshop.domain.entities.Animal;
 import com.fronchak.petshop.test.factories.AnimalMocksFactory;
+import com.fronchak.petshop.util.CustomizeAsserts;
 
 @ExtendWith(SpringExtension.class)
 public class AnimalMapperTest {
@@ -33,10 +34,7 @@ public class AnimalMapperTest {
 		Animal entity = AnimalMocksFactory.mockAnimal();
 		
 		OutputAnimalDTO result = mapper.convertEntityOutputDTO(entity);
-		
-		assertEquals(0L, result.getId());
-		assertEquals("Mock name 0", result.getName());
-		assertEquals("Mock description 0", result.getDescription());
+		CustomizeAsserts.assertAnimalOutputDTO(result);
 	}
 	
 	@Test
@@ -68,18 +66,6 @@ public class AnimalMapperTest {
 		Page<Animal> page = AnimalMocksFactory.mockAnimalPage();
 		
 		Page<OutputAllAnimalDTO> resultPage = mapper.convertEntityPageToOutputAllDTOPage(page);
-		List<OutputAllAnimalDTO> resultList = resultPage.getContent();
-		
-		OutputAllAnimalDTO result = resultList.get(0);
-		assertEquals(0L, result.getId());
-		assertEquals("Mock name 0", result.getName());
-		
-		result = resultList.get(1);
-		assertEquals(1L, result.getId());
-		assertEquals("Mock name 1", result.getName());
-		
-		result = resultList.get(2);
-		assertEquals(2L, result.getId());
-		assertEquals("Mock name 2", result.getName());
+		CustomizeAsserts.assertOutputAllAnimalDTOPage(resultPage);
 	}
 }
