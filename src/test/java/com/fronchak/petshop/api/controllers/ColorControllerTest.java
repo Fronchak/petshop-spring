@@ -54,13 +54,13 @@ public class ColorControllerTest extends AbstractColorControllerTest {
 		result.andExpect(status().isOk());
 		
 		result.andExpect(jsonPath("$.content[0].id").value(0L));
-		result.andExpect(jsonPath("$.content[0].name").value("Mock name 0"));
+		result.andExpect(jsonPath("$.content[0].name").value("Mock color name 0"));
 		
 		result.andExpect(jsonPath("$.content[1].id").value(1L));
-		result.andExpect(jsonPath("$.content[1].name").value("Mock name 1"));
+		result.andExpect(jsonPath("$.content[1].name").value("Mock color name 1"));
 		
 		result.andExpect(jsonPath("$.content[2].id").value(2L));
-		result.andExpect(jsonPath("$.content[2].name").value("Mock name 2"));
+		result.andExpect(jsonPath("$.content[2].name").value("Mock color name 2"));
 	}
 	
 	@Test

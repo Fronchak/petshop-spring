@@ -3,8 +3,6 @@ package com.fronchak.petshop.domain.mappers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,8 +43,8 @@ public class AnimalMapperTest {
 		mapper.copyInputDTOToEntity(dto, entity);
 		
 		assertNull(entity.getId());
-		assertEquals("Mock name 0", entity.getName());
-		assertEquals("Mock description 0", entity.getDescription());
+		assertEquals("Mock animal name 0", entity.getName());
+		assertEquals("Mock animal description 0", entity.getDescription());
 	}
 	
 	@Test
@@ -57,8 +55,8 @@ public class AnimalMapperTest {
 		mapper.copyInputDTOToEntity(dto, entity);
 		
 		assertEquals(1L, entity.getId());
-		assertEquals("Mock name 0", entity.getName());
-		assertEquals("Mock description 0", entity.getDescription());
+		assertEquals("Mock animal name 0", entity.getName());
+		assertEquals("Mock animal description 0", entity.getDescription());
 	}
 	
 	@Test

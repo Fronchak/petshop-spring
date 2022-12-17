@@ -35,9 +35,9 @@ public class ColorMapperTest {
 		mapper.copyInputDTOToEntity(dto, entity);
 		
 		assertNull(entity.getId());
-		assertEquals("Mock name 0", entity.getName());
-		assertEquals("Mock rgb 0", entity.getRgb());
-		assertEquals("Mock hex 0", entity.getHex());
+		assertEquals("Mock color name 0", entity.getName());
+		assertEquals("Mock color rgb 0", entity.getRgb());
+		assertEquals("Mock color hex 0", entity.getHex());
 	}
 	
 	@Test
@@ -49,9 +49,9 @@ public class ColorMapperTest {
 		mapper.copyInputDTOToEntity(dto, entity);
 		
 		assertEquals(1L, entity.getId());
-		assertEquals("Mock name 0", entity.getName());
-		assertEquals("Mock rgb 0", entity.getRgb());
-		assertEquals("Mock hex 0", entity.getHex());
+		assertEquals("Mock color name 0", entity.getName());
+		assertEquals("Mock color rgb 0", entity.getRgb());
+		assertEquals("Mock color hex 0", entity.getHex());
 	}
 	
 	@Test

@@ -32,11 +32,11 @@ public class AnimalMocksFactory {
 	}
 	
 	private static String mockName(int i) {
-		return "Mock name " + i;
+		return "Mock animal name " + i;
 	}
 	
 	private static String mockDescription(int i) {
-		return "Mock description " + i;
+		return "Mock animal description " + i;
 	}
 	
 	public static InsertAnimalDTO mockInsertAnimalDTO() {

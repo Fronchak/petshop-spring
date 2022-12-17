@@ -42,9 +42,9 @@ public abstract class AbstractColorControllerTest {
 	
 	protected void assertOutputColorDTO(ResultActions result) throws Exception {
 		result.andExpect(jsonPath("$.id").value(0L));
-		result.andExpect(jsonPath("$.name").value("Mock name 0"));
-		result.andExpect(jsonPath("$.hex").value("Mock hex 0"));
-		result.andExpect(jsonPath("$.rgb").value("Mock rgb 0"));
+		result.andExpect(jsonPath("$.name").value("Mock color name 0"));
+		result.andExpect(jsonPath("$.hex").value("Mock color hex 0"));
+		result.andExpect(jsonPath("$.rgb").value("Mock color rgb 0"));
 	}
 	
 	protected void assertUnprocessableEntityAndFieldRgbInvalid(ResultActions result) throws Exception {

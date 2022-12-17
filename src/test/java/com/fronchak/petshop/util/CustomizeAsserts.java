@@ -15,9 +15,9 @@ public class CustomizeAsserts {
 
 	public static void assertOutputColorDTO(OutputColorDTO result) {
 		assertEquals(0L,  result.getId());
-		assertEquals("Mock name 0", result.getName());
-		assertEquals("Mock rgb 0", result.getRgb());
-		assertEquals("Mock hex 0", result.getHex());
+		assertEquals("Mock color name 0", result.getName());
+		assertEquals("Mock color rgb 0", result.getRgb());
+		assertEquals("Mock color hex 0", result.getHex());
 	}
 	
 	public static void assertPageOutputAllColorDTO(Page<OutputAllColorDTO> resultPage) {
@@ -26,23 +26,23 @@ public class CustomizeAsserts {
 		OutputAllColorDTO result = resultList.get(0);
 		
 		assertEquals(0L, result.getId());
-		assertEquals("Mock name 0", result.getName());
+		assertEquals("Mock color name 0", result.getName());
 		
 		result = resultList.get(1);
 		
 		assertEquals(1L, result.getId());
-		assertEquals("Mock name 1", result.getName());
+		assertEquals("Mock color name 1", result.getName());
 		
 		result = resultList.get(2);
 		
 		assertEquals(2L, result.getId());
-		assertEquals("Mock name 2", result.getName());
+		assertEquals("Mock color name 2", result.getName());
 	}
 	
 	public static void assertAnimalOutputDTO(OutputAnimalDTO result) {
 		assertEquals(0L, result.getId());
-		assertEquals("Mock name 0", result.getName());
-		assertEquals("Mock description 0", result.getDescription());
+		assertEquals("Mock animal name 0", result.getName());
+		assertEquals("Mock animal description 0", result.getDescription());
 	}
 	
 	public static void assertOutputAllAnimalDTOPage(Page<OutputAllAnimalDTO> resultPage) {
@@ -50,14 +50,14 @@ public class CustomizeAsserts {
 		
 		OutputAllAnimalDTO result = resultList.get(0);
 		assertEquals(0L, result.getId());
-		assertEquals("Mock name 0", result.getName());
+		assertEquals("Mock animal name 0", result.getName());
 		
 		result = resultList.get(1);
 		assertEquals(1L, result.getId());
-		assertEquals("Mock name 1", result.getName());
+		assertEquals("Mock animal name 1", result.getName());
 		
 		result = resultList.get(2);
 		assertEquals(2L, result.getId());
-		assertEquals("Mock name 2", result.getName());
+		assertEquals("Mock animal name 2", result.getName());
 	}
 }

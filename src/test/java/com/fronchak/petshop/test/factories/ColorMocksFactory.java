@@ -27,15 +27,15 @@ public class ColorMocksFactory {
 	}
 	
 	private static String mockName(int i) {
-		return "Mock name " + i;
+		return "Mock color name " + i;
 	}
 	
 	private static String mockRgb(int i) {
-		return "Mock rgb " + i;
+		return "Mock color rgb " + i;
 	}
 	
 	private static String mockHex(int i) {
-		return "Mock hex " + i;
+		return "Mock color hex " + i;
 	}
 	
 	public static Color mockColor() {
