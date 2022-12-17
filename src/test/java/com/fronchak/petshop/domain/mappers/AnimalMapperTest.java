@@ -54,7 +54,7 @@ public class AnimalMapperTest {
 		
 		mapper.copyInputDTOToEntity(dto, entity);
 		
-		assertEquals(1L, entity.getId());
+		assertEquals(11L, entity.getId());
 		assertEquals("Mock animal name 0", entity.getName());
 		assertEquals("Mock animal description 0", entity.getDescription());
 	}

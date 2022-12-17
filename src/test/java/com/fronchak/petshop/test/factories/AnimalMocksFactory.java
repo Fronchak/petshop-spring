@@ -27,15 +27,15 @@ public class AnimalMocksFactory {
 		return mock;
 	}
 	
-	private static Long mockId(int i) {
-		return i + 0L;
+	public static Long mockId(int i) {
+		return i + 10L;
 	}
 	
-	private static String mockName(int i) {
+	public static String mockName(int i) {
 		return "Mock animal name " + i;
 	}
 	
-	private static String mockDescription(int i) {
+	public static String mockDescription(int i) {
 		return "Mock animal description " + i;
 	}
 	

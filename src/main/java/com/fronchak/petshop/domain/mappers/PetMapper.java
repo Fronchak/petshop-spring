@@ -3,9 +3,11 @@ package com.fronchak.petshop.domain.mappers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.fronchak.petshop.domain.dtos.pet.InputPetDTO;
+import com.fronchak.petshop.domain.dtos.pet.OutputAllPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputPetDTO;
 import com.fronchak.petshop.domain.entities.Animal;
 import com.fronchak.petshop.domain.entities.Color;
@@ -25,22 +27,22 @@ public class PetMapper {
 		return dto;
 	}
 	
-	private OutputPetDTO.PetAnimalOutputDTO convertEntityToPetAnimalOutputDTO(Animal entity) {
-		OutputPetDTO.PetAnimalOutputDTO dto = new OutputPetDTO.PetAnimalOutputDTO();
+	private OutputAllPetDTO.PetAnimalOutputDTO convertEntityToPetAnimalOutputDTO(Animal entity) {
+		OutputAllPetDTO.PetAnimalOutputDTO dto = new OutputAllPetDTO.PetAnimalOutputDTO();
 		dto.setId(entity.getId());
 		dto.setName(entity.getName());
 		return dto;
 	}
 	
-	private List<OutputPetDTO.PetColorOutputDTO> convertEntityListToPetColorOutputDTOList(List<Color> list) {
+	private List<OutputAllPetDTO.PetColorOutputDTO> convertEntityListToPetColorOutputDTOList(List<Color> list) {
 		return list.stream()
 			.map(entity -> convertEntityToPetColorOutputDTO(entity))
 			.collect(Collectors.toList());
 			
 	}
 	
-	private OutputPetDTO.PetColorOutputDTO convertEntityToPetColorOutputDTO(Color entity) {
-		OutputPetDTO.PetColorOutputDTO dto = new OutputPetDTO.PetColorOutputDTO();
+	private OutputAllPetDTO.PetColorOutputDTO convertEntityToPetColorOutputDTO(Color entity) {
+		OutputAllPetDTO.PetColorOutputDTO dto = new OutputAllPetDTO.PetColorOutputDTO();
 		dto.setId(entity.getId());
 		dto.setName(entity.getName());
 		return dto;
@@ -50,5 +52,18 @@ public class PetMapper {
 		entity.setName(dto.getName());
 		entity.setWeightInKg(dto.getWeightInKg());
 		entity.setHeightInCm(dto.getHeightInCm());
+	}
+	
+	public Page<OutputAllPetDTO> convertEntityPageToOutputAllDTOPage(Page<Pet> page) {
+		return page.map(entity -> convertEntityToOutputAllDTO(entity));		
+	}
+	
+	private OutputAllPetDTO convertEntityToOutputAllDTO(Pet entity) {
+		OutputAllPetDTO mock = new OutputAllPetDTO();
+		mock.setId(entity.getId());
+		mock.setName(entity.getName());
+		mock.setAnimal(convertEntityToPetAnimalOutputDTO(entity.getAnimal()));
+		mock.setColors(convertEntityListToPetColorOutputDTOList(entity.getColors()));
+		return mock;
 	}
 }

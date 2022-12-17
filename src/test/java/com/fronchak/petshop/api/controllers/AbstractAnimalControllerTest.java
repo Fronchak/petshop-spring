@@ -51,7 +51,7 @@ public abstract class AbstractAnimalControllerTest {
 	}
 	
 	protected void assertOutputDTO(ResultActions result) throws Exception {
-		result.andExpect(jsonPath("$.id").value(0L));
+		result.andExpect(jsonPath("$.id").value(10L));
 		result.andExpect(jsonPath("$.name").value("Mock animal name 0"));
 		result.andExpect(jsonPath("$.description").value("Mock animal description 0"));
 	}

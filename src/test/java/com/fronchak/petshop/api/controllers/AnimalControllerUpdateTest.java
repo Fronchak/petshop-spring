@@ -85,7 +85,8 @@ public class AnimalControllerUpdateTest extends AbstractAnimalControllerTest {
 	
 	@Test
 	public void updateShouldReturnSuccessAndDTOWhenEntityWithTheSameNameIsEntityBeenUpdated() throws Exception {
-		entity = AnimalMocksFactory.mockAnimal(1);
+		entity = AnimalMocksFactory.mockAnimal();
+		entity.setId(1L);
 		when(repository.findByName(updateDTO.getName())).thenReturn(entity);
 		
 		ResultActions result = mockMvc.perform(put("/api/animals/{id}", VALID_ID)
