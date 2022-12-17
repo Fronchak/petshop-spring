@@ -63,7 +63,7 @@ public class AnimalServiceTest {
 		when(mapper.convertEntityOutputDTO(entity)).thenReturn(dto);
 		
 		OutputAnimalDTO result = service.findById(VALID_ID);
-		CustomizeAsserts.assertAnimalOutputDTO(result);
+		CustomizeAsserts.assertOutputAnimalDTO(result);
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class AnimalServiceTest {
 		
 		OutputAnimalDTO result = service.save(insertDTO);
 		
-		CustomizeAsserts.assertAnimalOutputDTO(result);
+		CustomizeAsserts.assertOutputAnimalDTO(result);
 		verify(repository, times(1)).save(any(Animal.class));
 	}
 	
@@ -116,7 +116,7 @@ public class AnimalServiceTest {
 		
 		OutputAnimalDTO result = service.update(updateDTO, VALID_ID);
 		
-		CustomizeAsserts.assertAnimalOutputDTO(result);
+		CustomizeAsserts.assertOutputAnimalDTO(result);
 	}
 	
 	@Test

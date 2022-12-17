@@ -66,7 +66,7 @@ public class ColorMapperTest {
 		Page<Color> page = ColorMocksFactory.mockColorPage();
 		
 		Page<OutputAllColorDTO> resultPage = mapper.convertEntityPageToOutputAllDTOPage(page);
-		CustomizeAsserts.assertPageOutputAllColorDTO(resultPage);
+		CustomizeAsserts.assertOutputAllColorDTOPage(resultPage);
 	}
 	
 }

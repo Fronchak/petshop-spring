@@ -32,7 +32,7 @@ public class AnimalMapperTest {
 		Animal entity = AnimalMocksFactory.mockAnimal();
 		
 		OutputAnimalDTO result = mapper.convertEntityOutputDTO(entity);
-		CustomizeAsserts.assertAnimalOutputDTO(result);
+		CustomizeAsserts.assertOutputAnimalDTO(result);
 	}
 	
 	@Test

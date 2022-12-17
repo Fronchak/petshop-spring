@@ -64,4 +64,9 @@ public class Animal implements Serializable {
 		Animal other = (Animal) obj;
 		return Objects.equals(id, other.id);
 	}
+	
+	@Override
+	public String toString() {
+		return "ID: " + id + ", animal: " + name;
+	}
 }

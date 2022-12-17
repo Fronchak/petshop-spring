@@ -85,7 +85,7 @@ public class ColorServiceTest {
 		when(mapper.convertEntityPageToOutputAllDTOPage(entityPage)).thenReturn(dtoPage);
 		
 		Page<OutputAllColorDTO> resultPage = service.findAllPaged(pageable);
-		CustomizeAsserts.assertPageOutputAllColorDTO(resultPage);
+		CustomizeAsserts.assertOutputAllColorDTOPage(resultPage);
 		verify(repository, times(1)).findAll(pageable);
 		verify(mapper, times(1)).convertEntityPageToOutputAllDTOPage(entityPage);
 	}

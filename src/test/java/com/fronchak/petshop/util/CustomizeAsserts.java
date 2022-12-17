@@ -10,6 +10,7 @@ import com.fronchak.petshop.domain.dtos.animal.OutputAllAnimalDTO;
 import com.fronchak.petshop.domain.dtos.animal.OutputAnimalDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputAllColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputColorDTO;
+import com.fronchak.petshop.domain.dtos.pet.OutputAllPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputPetDTO;
 
 public class CustomizeAsserts {
@@ -21,7 +22,7 @@ public class CustomizeAsserts {
 		assertEquals("Mock color hex 0", result.getHex());
 	}
 	
-	public static void assertPageOutputAllColorDTO(Page<OutputAllColorDTO> resultPage) {
+	public static void assertOutputAllColorDTOPage(Page<OutputAllColorDTO> resultPage) {
 		List<OutputAllColorDTO> resultList = resultPage.getContent();
 		
 		OutputAllColorDTO result = resultList.get(0);
@@ -40,7 +41,7 @@ public class CustomizeAsserts {
 		assertEquals("Mock color name 2", result.getName());
 	}
 	
-	public static void assertAnimalOutputDTO(OutputAnimalDTO result) {
+	public static void assertOutputAnimalDTO(OutputAnimalDTO result) {
 		assertEquals(10L, result.getId());
 		assertEquals("Mock animal name 0", result.getName());
 		assertEquals("Mock animal description 0", result.getDescription());
@@ -73,5 +74,29 @@ public class CustomizeAsserts {
 		assertEquals("Mock color name 0", result.getColors().get(0).getName());
 		assertEquals(1L, result.getColors().get(1).getId());
 		assertEquals("Mock color name 1", result.getColors().get(1).getName());
+	}
+	
+	public static void assertOutputAllPetDTOPage(Page<OutputAllPetDTO> resultPage) {
+		List<OutputAllPetDTO> resultList = resultPage.getContent();
+		
+		OutputAllPetDTO result = resultList.get(0);
+		assertEquals(20L, result.getId());
+		assertEquals("Mock pet name 0", result.getName());
+		assertEquals(10L, result.getAnimal().getId());
+		assertEquals("Mock animal name 0", result.getAnimal().getName());
+		assertEquals(0L, result.getColors().get(0).getId());
+		assertEquals("Mock color name 0", result.getColors().get(0).getName());
+		assertEquals(1L, result.getColors().get(1).getId());
+		assertEquals("Mock color name 1", result.getColors().get(1).getName());		
+		
+		result = resultList.get(1);
+		assertEquals(21L, result.getId());
+		assertEquals("Mock pet name 1", result.getName());
+		assertEquals(11L, result.getAnimal().getId());
+		assertEquals("Mock animal name 1", result.getAnimal().getName());
+		assertEquals(2L, result.getColors().get(0).getId());
+		assertEquals("Mock color name 2", result.getColors().get(0).getName());
+		assertEquals(3L, result.getColors().get(1).getId());
+		assertEquals("Mock color name 3", result.getColors().get(1).getName());	
 	}
 }

@@ -103,4 +103,9 @@ public class Pet implements Serializable {
 		Pet other = (Pet) obj;
 		return Objects.equals(id, other.id);
 	}
+	
+	@Override
+	public String toString() {
+		return "ID: " + id + ", name: " + name;
+	}
 }
