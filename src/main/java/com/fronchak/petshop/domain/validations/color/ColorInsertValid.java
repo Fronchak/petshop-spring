@@ -1,4 +1,4 @@
-package com.fronchak.petshop.domain.validations;
+package com.fronchak.petshop.domain.validations.color;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

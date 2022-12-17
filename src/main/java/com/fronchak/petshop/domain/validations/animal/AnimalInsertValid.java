@@ -1,4 +1,4 @@
-package com.fronchak.petshop.domain.validations;
+package com.fronchak.petshop.domain.validations.animal;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-@Constraint(validatedBy = ColorUpdateValidator.class)
+@Constraint(validatedBy = AnimalInsertValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 
-public @interface ColorUpdateValid {
+public @interface AnimalInsertValid {
 	String message() default "Validation error";
 
 	Class<?>[] groups() default {};

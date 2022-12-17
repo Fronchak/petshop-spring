@@ -8,4 +8,5 @@ import com.fronchak.petshop.domain.entities.Animal;
 @Repository
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
 
+	Animal findByName(String name);
 }

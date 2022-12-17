@@ -2,6 +2,7 @@ package com.fronchak.petshop.api.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fronchak.petshop.domain.dtos.animal.OutputAllAnimalDTO;
 import com.fronchak.petshop.domain.dtos.animal.OutputAnimalDTO;
+import com.fronchak.petshop.domain.exceptions.DatabaseException;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.petshop.test.factories.AnimalMocksFactory;
 
@@ -28,10 +30,7 @@ public class AnimalControllerTest extends AbstractAnimalControllerTest {
 		ResultActions result = mockMvc.perform(get("/api/animals/{id}", VALID_ID)
 				.accept(mediaType));
 		
-		result.andExpect(status().isOk());
-		result.andExpect(jsonPath("$.id").value(0L));
-		result.andExpect(jsonPath("$.name").value("Mock name 0"));
-		result.andExpect(jsonPath("$.description").value("Mock description 0"));
+		assertSuccessAndOutputDTO(result);
 	}
 	
 	@Test
@@ -41,9 +40,7 @@ public class AnimalControllerTest extends AbstractAnimalControllerTest {
 		ResultActions result = mockMvc.perform(get("/api/animals/{id}", INVALID_ID)
 				.accept(mediaType));
 		
-		result.andExpect(status().isNotFound());
-		result.andExpect(jsonPath("$.status").value(404));
-		result.andExpect(jsonPath("$.error").value("Resource not found"));
+		assertNotFound(result);
 	}
 	
 	@Test
@@ -74,5 +71,27 @@ public class AnimalControllerTest extends AbstractAnimalControllerTest {
 				.accept(mediaType));
 		
 		result.andExpect(status().isNoContent());
+	}
+	
+	@Test
+	public void deleteShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+		doThrow(ResourceNotFoundException.class).when(service).delete(INVALID_ID);
+		
+		ResultActions result = mockMvc.perform(delete("/api/animals/{id}", INVALID_ID)
+				.accept(mediaType));
+	
+		assertNotFound(result);
+	}
+	
+	@Test
+	public void deleteShoudReturnBadRequestWhenIdIsDependent() throws Exception {
+		doThrow(DatabaseException.class).when(service).delete(DEPENDENT_ID);
+		
+		ResultActions result = mockMvc.perform(delete("/api/animals/{id}", DEPENDENT_ID)
+				.accept(mediaType));
+		
+		result.andExpect(status().isBadRequest());
+		result.andExpect(jsonPath("$.status").value(400));
+		result.andExpect(jsonPath("$.error").value("Integrity error"));
 	}
 }
