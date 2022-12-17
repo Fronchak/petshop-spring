@@ -34,7 +34,7 @@ public class ColorUpdateValidator implements ConstraintValidator<ColorUpdateVali
 		List<FieldMessage> errors = new ArrayList<>();
 		
 		Color color = repository.findByName(dto.getName());
-		if(color != null &&  !color.getId().equals(id)) {
+		if(color != null && !color.getId().equals(id)) {
 			errors.add(new FieldMessage("name", "There is another color with the same name saved"));
 		}
 		
