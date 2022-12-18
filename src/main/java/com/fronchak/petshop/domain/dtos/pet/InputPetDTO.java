@@ -4,16 +4,31 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 public class InputPetDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	@NotBlank(message = "Pet's name cannot be empty")
 	private String name;
+	
+	@Positive(message = "Pet's weight cannot be negative")
+	@DecimalMax(value = "50.0", message = "Pet's weight cannot be bigger than 50.0 kg")
+	@NotNull(message = "Pet's weight must be specified")
 	private Double weightInKg;
 	private Double heightInCm;
 	
+	@NotNull(message = "Pet's type of animal must be specified")
 	private Long idAnimal;
-	private List<Long> idColors = new ArrayList<>();
+	
+	@NotEmpty(message = "Pet must have at least one color")
+	private List<@NotNull(message = "Pet's color cannot be null") Long> idColors = new ArrayList<>();
 	
 	public String getName() {
 		return name;
