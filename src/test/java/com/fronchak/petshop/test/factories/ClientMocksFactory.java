@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 
 import com.fronchak.petshop.domain.dtos.client.InputClientDTO;
 import com.fronchak.petshop.domain.dtos.client.InsertClientDTO;
+import com.fronchak.petshop.domain.dtos.client.OutputAllClientDTO;
 import com.fronchak.petshop.domain.dtos.client.OutputClientDTO;
 import com.fronchak.petshop.domain.dtos.client.UpdateClientDTO;
 import com.fronchak.petshop.domain.entities.Client;
@@ -118,6 +119,26 @@ public class ClientMocksFactory {
 		mock.setId(PetMocksFactory.mockId(i));
 		mock.setPetName(PetMocksFactory.mockName(i));
 		mock.setAnimalName(AnimalMocksFactory.mockName(i));
+		return mock;
+	}
+	
+	public static Page<OutputAllClientDTO> mockOutputAllClientDTOPage() {
+		return new PageImpl<>(mockOutputAllClientDTOList());
+	}
+	
+	public static List<OutputAllClientDTO> mockOutputAllClientDTOList() {
+		List<OutputAllClientDTO> list = new ArrayList<>();
+		list.add(mockOutputAllClientDTO(0));
+		list.add(mockOutputAllClientDTO(1));
+		list.add(mockOutputAllClientDTO(2));
+		return list;
+	}
+	
+	public static OutputAllClientDTO mockOutputAllClientDTO(int i) {
+		OutputAllClientDTO mock = new OutputAllClientDTO();
+		mock.setId(mockId(i));
+		mock.setName(mockName(i));
+		mock.setEmail(mockEmail(i));
 		return mock;
 	}
 }

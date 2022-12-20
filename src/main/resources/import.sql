@@ -12,3 +12,8 @@ INSERT INTO ANIMAL (name, description) values ('Cat', 'The cat is a domestic spe
 INSERT INTO ANIMAL (name, description) values ('Mouse', 'A mouse is a small rodent. Characteristically, mice are known to have a pointed snout, small rounded ears, a body-length scaly tail, and a high breeding rate. The best known mouse species is the common house mouse');
 INSERT INTO ANIMAL (name, description) values ('Rabbit', 'Rabbits, also known as bunnies or bunny rabbits, are small mammals in the family Leporidae of the order Lagomorpha');
 INSERT INTO ANIMAL (name, description) values ('Bird', 'Birds are a group of warm-blooded vertebrates constituting the class Aves, characterised by feathers, toothless beaked jaws, the laying of hard-shelled eggs, a high metabolic rate, a four-chambered heart, and a strong yet lightweight skeleton');
+
+INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('Gabriel', 'Fronchak Gmack', 'gabriel@gmail.com', '1234567890', '2000-10-05');
+INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('Alice', 'Fronchak Gmack', 'alice@gmail.com', '1334567890', '1967-03-15');
+INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('Claudia', 'Gmack', 'claudia@gmail.com', '1244567890', '1990-02-28');
+INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('João', 'Gmack', 'joao@gmail.com', '71244567890', '1962-04-17');

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 
 import com.fronchak.petshop.domain.dtos.animal.OutputAllAnimalDTO;
 import com.fronchak.petshop.domain.dtos.animal.OutputAnimalDTO;
+import com.fronchak.petshop.domain.dtos.client.OutputAllClientDTO;
 import com.fronchak.petshop.domain.dtos.client.OutputClientDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputAllColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputColorDTO;
@@ -115,5 +116,24 @@ public class CustomizeAsserts {
 				21L, "Mock pet name 1", "Mock animal name 1"
 				);
 		assertTrue(result.getPets().contains(resultPet));
+	}
+	
+	public static void assertOutputAllClientDTOPage(Page<OutputAllClientDTO> resultPage) {
+		List<OutputAllClientDTO> resultList = resultPage.getContent();
+		
+		OutputAllClientDTO result = resultList.get(0);
+		assertEquals(30L, result.getId());
+		assertEquals("Mock client firstName 0 Mock client lastName 0", result.getName());
+		assertEquals("MockClientEmail0@gmail.com", result.getEmail());
+		
+		result = resultList.get(1);
+		assertEquals(31L, result.getId());
+		assertEquals("Mock client firstName 1 Mock client lastName 1", result.getName());
+		assertEquals("MockClientEmail1@gmail.com", result.getEmail());
+		
+		result = resultList.get(2);
+		assertEquals(32L, result.getId());
+		assertEquals("Mock client firstName 2 Mock client lastName 2", result.getName());
+		assertEquals("MockClientEmail2@gmail.com", result.getEmail());
 	}
 }

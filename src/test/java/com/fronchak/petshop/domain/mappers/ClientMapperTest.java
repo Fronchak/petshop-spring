@@ -43,22 +43,7 @@ public class ClientMapperTest {
 		Page<Client> entityPage = ClientMocksFactory.mockClientPage();
 		
 		Page<OutputAllClientDTO> resultPage = mapper.convertEntityPageToOutputAllClientDTO(entityPage);
-		List<OutputAllClientDTO> resultList = resultPage.getContent();
-		
-		OutputAllClientDTO result = resultList.get(0);
-		assertEquals(30L, result.getId());
-		assertEquals("Mock client firstName 0 Mock client lastName 0", result.getName());
-		assertEquals("MockClientEmail0@gmail.com", result.getEmail());
-		
-		result = resultList.get(1);
-		assertEquals(31L, result.getId());
-		assertEquals("Mock client firstName 1 Mock client lastName 1", result.getName());
-		assertEquals("MockClientEmail1@gmail.com", result.getEmail());
-		
-		result = resultList.get(2);
-		assertEquals(32L, result.getId());
-		assertEquals("Mock client firstName 2 Mock client lastName 2", result.getName());
-		assertEquals("MockClientEmail2@gmail.com", result.getEmail());
+		CustomizeAsserts.assertOutputAllClientDTOPage(resultPage);
 	}
 	
 	@Test
