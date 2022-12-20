@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.fronchak.petshop.domain.dtos.pet.InsertPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputAllPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputPetDTO;
+import com.fronchak.petshop.domain.dtos.pet.UpdatePetDTO;
 import com.fronchak.petshop.domain.services.PetService;
 
 @RestController
@@ -53,5 +55,11 @@ public class PetController {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(outputDTO.getId()).toUri();	
 		return ResponseEntity.created(uri).body(outputDTO);
+	}
+	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<OutputPetDTO> update(@Valid @RequestBody UpdatePetDTO updateDTO, @PathVariable Long id) {
+		OutputPetDTO outputDTO = service.update(updateDTO, id);
+		return ResponseEntity.ok().body(outputDTO);
 	}
 }

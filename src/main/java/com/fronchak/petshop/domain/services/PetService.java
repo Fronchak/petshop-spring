@@ -17,6 +17,7 @@ import com.fronchak.petshop.domain.dtos.pet.OutputPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.UpdatePetDTO;
 import com.fronchak.petshop.domain.entities.Pet;
 import com.fronchak.petshop.domain.exceptions.DatabaseException;
+import com.fronchak.petshop.domain.exceptions.DatabaseReferenceException;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.petshop.domain.mappers.PetMapper;
 import com.fronchak.petshop.domain.repositories.AnimalRepository;
@@ -53,10 +54,16 @@ public class PetService {
 	
 	@Transactional
 	public OutputPetDTO save(InsertPetDTO dto) {
-		Pet entity = new Pet();
-		copyDTOToEntity(dto, entity);
-		entity = repository.save(entity);
-		return mapper.convertEntityToOutputDTO(entity);
+		try {
+			Pet entity = new Pet();
+			copyDTOToEntity(dto, entity);
+			entity = repository.save(entity);
+			return mapper.convertEntityToOutputDTO(entity);
+		}
+		catch(DataIntegrityViolationException e) {
+			throw new DatabaseReferenceException("Error trying to save pet, invalid animal or colors");
+		}
+
 	}
 	
 	protected void copyDTOToEntity(InputPetDTO dto, Pet entity) {
@@ -76,6 +83,9 @@ public class PetService {
 		}
 		catch(EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Pet", id);
+		}
+		catch(DataIntegrityViolationException e) {
+			throw new DatabaseReferenceException("Error trying to update pet, invalid animal or colors");
 		}
 	}
 	

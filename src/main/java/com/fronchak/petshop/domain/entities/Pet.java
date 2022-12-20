@@ -15,6 +15,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fronchak.petshop.domain.exceptions.FieldMessage;
+import com.fronchak.petshop.domain.exceptions.ValidationException;
+
 @Entity
 @Table(name = "pet")
 public class Pet implements Serializable {
@@ -84,6 +87,10 @@ public class Pet implements Serializable {
 	}
 	
 	public void addColor(Color color) {
+		if(colors.stream().anyMatch(entity -> entity.getId().equals(color.getId()))) {
+			FieldMessage fieldMessage = new FieldMessage("colors", "Pet's colors cannot be duplicate");
+			throw new ValidationException("Validation error", fieldMessage);
+		}
 		colors.add(color);
 	}
 

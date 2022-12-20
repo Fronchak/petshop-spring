@@ -38,7 +38,10 @@ import com.fronchak.petshop.domain.entities.Animal;
 import com.fronchak.petshop.domain.entities.Color;
 import com.fronchak.petshop.domain.entities.Pet;
 import com.fronchak.petshop.domain.exceptions.DatabaseException;
+import com.fronchak.petshop.domain.exceptions.DatabaseReferenceException;
+import com.fronchak.petshop.domain.exceptions.FieldMessage;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
+import com.fronchak.petshop.domain.exceptions.ValidationException;
 import com.fronchak.petshop.domain.mappers.PetMapper;
 import com.fronchak.petshop.domain.repositories.AnimalRepository;
 import com.fronchak.petshop.domain.repositories.ColorRepository;
@@ -137,6 +140,39 @@ public class PetServiceTest {
 	}
 	
 	@Test
+	public void saveShouldThrowDatabaseReferenceExceptionWhenAnyOfTheEntityReferencesDoesNotExist() {
+		InsertPetDTO insertDTO = PetMocksFactory.mockInsertPetDTO();
+		Color color1 = ColorMocksFactory.mockColor(0);
+		Color color2 = ColorMocksFactory.mockColor(1);
+		
+		when(colorRepository.getReferenceById(insertDTO.getIdColors().get(0))).thenReturn(color1);
+		when(colorRepository.getReferenceById(insertDTO.getIdColors().get(1))).thenReturn(color2);
+		when(repository.save(any(Pet.class))).thenThrow(DataIntegrityViolationException.class);
+		assertThrows(DatabaseReferenceException.class, () -> service.save(insertDTO));
+	}
+	
+	@Test
+	public void saveShouldThrowValidationExceptionWhenIdColorsHasAnyDuplicateIds() {
+		InsertPetDTO insertDTO = PetMocksFactory.mockInsertPetDTO();
+		insertDTO.getIdColors().clear();
+		insertDTO.getIdColors().add(0L);
+		insertDTO.getIdColors().add(0L);
+		Animal animal = AnimalMocksFactory.mockAnimal();
+		Color color1 = ColorMocksFactory.mockColor(0);
+		
+		doNothing().when(mapper).copyDTOToEntity(eq(insertDTO), any(Pet.class));
+		when(animalRepository.getReferenceById(insertDTO.getIdAnimal())).thenReturn(animal);
+		when(colorRepository.getReferenceById(insertDTO.getIdColors().get(0))).thenReturn(color1);
+		
+		ValidationException exception = assertThrows(ValidationException.class, () -> service.save(insertDTO));
+		FieldMessage fieldMessage = exception.getFieldMessage();
+		
+		assertEquals("Validation error", exception.getMessage());
+		assertEquals("colors", fieldMessage.getFieldName());
+		assertEquals("Pet's colors cannot be duplicate", fieldMessage.getMessage());
+	}
+	
+	@Test
 	public void updateShouldReturnDTOAfterUpdateEntityWhenIdIsExists() {
 		UpdatePetDTO updateDTO = PetMocksFactory.mockUpdatePetDTO();
 		OutputPetDTO outputDTO = PetMocksFactory.mockOutputPetDTO();
@@ -175,6 +211,21 @@ public class PetServiceTest {
 		
 		assertThrows(ResourceNotFoundException.class, () -> service.update(eq(updateDTO), INVALID_ID));
 		verify(repository, never()).save(any());
+	}
+	
+	@Test
+	public void updateShouldThrowDatabaseReferenceExceptionWhenAnyOfTheEntityReferencesExist() {
+		UpdatePetDTO updateDTO = PetMocksFactory.mockUpdatePetDTO();
+		Color color1 = ColorMocksFactory.mockColor(0);
+		Color color2 = ColorMocksFactory.mockColor(1);
+		Pet entity = PetMocksFactory.mockPet();
+		
+		when(repository.getReferenceById(VALID_ID)).thenReturn(entity);
+		when(colorRepository.getReferenceById(updateDTO.getIdColors().get(0))).thenReturn(color1);
+		when(colorRepository.getReferenceById(updateDTO.getIdColors().get(1))).thenReturn(color2);
+		when(repository.save(entity)).thenThrow(DataIntegrityViolationException.class);
+		
+		assertThrows(DatabaseReferenceException.class, () -> service.update(updateDTO, VALID_ID));
 	}
 	
 	@Test

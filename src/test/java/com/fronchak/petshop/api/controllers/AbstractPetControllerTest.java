@@ -106,4 +106,37 @@ public abstract class AbstractPetControllerTest {
 		result.andExpect(jsonPath("$.errors[0].fieldName").value("idColors"));
 		result.andExpect(jsonPath("$.errors[0].message").value("Pet must have at least one color"));
 	}
+	
+	protected void assertUnprocessableEntityAndInvalidNullHeight(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("heightInCm"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Pet's height must be specified"));
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidNonPositiveHeight(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("heightInCm"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Pet's height must be a positive value"));
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidGreaterThan200Height(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("heightInCm"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Pet's height cannot be bigger than 200 cm"));
+	}
+	
+	protected void assertBadRequestAndDatabaseReferenceException(ResultActions result) throws Exception {
+		assertBadRequest(result);
+		result.andExpect(jsonPath("$.error").value("Integrity reference error"));
+	}
+	
+	protected void assertBadRequest(ResultActions result) throws Exception {
+		result.andExpect(status().isBadRequest());
+		result.andExpect(jsonPath("$.status").value(400));
+	}
+	
+	protected void assertBadRequestAndValidationException(ResultActions result) throws Exception {
+		assertBadRequest(result);
+		result.andExpect(jsonPath("$.error").value("Validation error"));
+	}
 }

@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import com.fronchak.petshop.domain.exceptions.DatabaseException;
+import com.fronchak.petshop.domain.exceptions.DatabaseReferenceException;
 import com.fronchak.petshop.domain.exceptions.ExceptionResponse;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
+import com.fronchak.petshop.domain.exceptions.ValidationException;
 import com.fronchak.petshop.domain.exceptions.ValidationExceptionResponse;
 
 @RestControllerAdvice
@@ -61,4 +63,27 @@ public class CustomizeResponseEntityExceptionHandler {
 		
 		return ResponseEntity.status(status).body(response);
 	}
+	
+	@ExceptionHandler(DatabaseReferenceException.class)
+	public ResponseEntity<ExceptionResponse> handleDatabaseReferenceException(DatabaseReferenceException e, WebRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ExceptionResponse response = makeResponse(e, request, status, DatabaseReferenceException.getError());
+		return ResponseEntity.status(status).body(response);
+	}
+	
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<ValidationExceptionResponse> handleValidationExceptionResponse(
+			ValidationException e, WebRequest request
+			) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ValidationExceptionResponse response = new ValidationExceptionResponse();
+		response.setTimestamp(Instant.now());
+		response.setError("Validation error");
+		response.setStatus(status.value());
+		response.setMessage(e.getMessage());
+		response.setPath(request.getDescription(false));
+		response.addError(e.getFieldMessage());
+		return ResponseEntity.status(status).body(response);
+	}
+	
 }

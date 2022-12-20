@@ -3,7 +3,6 @@ package com.fronchak.petshop.api.controllers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +11,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fronchak.petshop.domain.dtos.pet.InsertPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputPetDTO;
+import com.fronchak.petshop.domain.exceptions.DatabaseReferenceException;
+import com.fronchak.petshop.domain.exceptions.ValidationException;
 import com.fronchak.petshop.test.factories.PetMocksFactory;
 
 public class PetControllerSaveTest extends AbstractPetControllerTest {
@@ -72,8 +73,8 @@ public class PetControllerSaveTest extends AbstractPetControllerTest {
 	}
 	
 	@Test
-	public void saveShouldReturnUnprocessableEntityWhenWeightIsNegative() throws Exception {
-		insertDTO.setWeightInKg(-10.0);
+	public void saveShouldReturnUnprocessableEntityWhenWeightIsNotPositive() throws Exception {
+		insertDTO.setWeightInKg(0.0);
 		mapperInsertDTOToJson();
 		performPostMethod();
 		assertUnprocessableEntityAndInvalidNegativeWeightInKg(result);
@@ -101,5 +102,45 @@ public class PetControllerSaveTest extends AbstractPetControllerTest {
 		mapperInsertDTOToJson();
 		performPostMethod();
 		assertUnprocessableEntityAndInvalidEmptyIdColors(result);
+	}
+	
+	@Test
+	public void saveShouldReturnUnprocessableEntityWhenHeightIsNull() throws Exception {
+		insertDTO.setHeightInCm(null);
+		mapperInsertDTOToJson();
+		performPostMethod();
+		assertUnprocessableEntityAndInvalidNullHeight(result);
+	}
+	
+	@Test
+	public void assertUnprocessableEntityAndInvalidNonPositiveHeight() throws Exception {
+		insertDTO.setHeightInCm(0.0);
+		mapperInsertDTOToJson();
+		performPostMethod();
+		assertUnprocessableEntityAndInvalidNonPositiveHeight(result);
+	}
+	
+	@Test
+	public void assertUnprocessableEntityAndInvalidTooBigHeight() throws Exception {
+		insertDTO.setHeightInCm(200.01);
+		mapperInsertDTOToJson();
+		performPostMethod();
+		assertUnprocessableEntityAndInvalidGreaterThan200Height(result);
+	}
+	
+	@Test
+	public void saveShouldReturnBadRequestWhenServiceThrowDatabaseReferenceException() throws Exception {
+		when(service.save(any(InsertPetDTO.class))).thenThrow(DatabaseReferenceException.class);
+		mapperInsertDTOToJson();
+		performPostMethod();
+		assertBadRequestAndDatabaseReferenceException(result);
+	}
+	
+	@Test
+	public void saveShouldReturnBadRequestWhenServiceThrowValidationException() throws Exception {
+		when(service.save(any(InsertPetDTO.class))).thenThrow(ValidationException.class);
+		mapperInsertDTOToJson();
+		performPostMethod();
+		assertBadRequestAndValidationException(result);
 	}
 }

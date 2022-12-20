@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,6 +21,10 @@ public class InputPetDTO implements Serializable {
 	@DecimalMax(value = "50.0", message = "Pet's weight cannot be bigger than 50.0 kg")
 	@NotNull(message = "Pet's weight must be specified")
 	private Double weightInKg;
+	
+	@NotNull(message = "Pet's height must be specified")
+	@Positive(message = "Pet's height must be a positive value")
+	@DecimalMax(value = "200.0", message = "Pet's height cannot be bigger than 200 cm")
 	private Double heightInCm;
 	
 	@NotNull(message = "Pet's type of animal must be specified")
