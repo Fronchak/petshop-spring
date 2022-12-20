@@ -42,6 +42,12 @@ public class Pet implements Serializable {
 			)
 	private List<Color> colors = new ArrayList<>();
 
+	public Pet() {}
+	
+	public Pet(Long id) {
+		this.id = id;
+	}
+	
 	public Long getId() {
 		return id;
 	}

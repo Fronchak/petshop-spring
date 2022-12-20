@@ -1,6 +1,7 @@
 package com.fronchak.petshop.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 
 import com.fronchak.petshop.domain.dtos.animal.OutputAllAnimalDTO;
 import com.fronchak.petshop.domain.dtos.animal.OutputAnimalDTO;
+import com.fronchak.petshop.domain.dtos.client.OutputClientDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputAllColorDTO;
 import com.fronchak.petshop.domain.dtos.color.OutputColorDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputAllPetDTO;
@@ -98,5 +100,20 @@ public class CustomizeAsserts {
 		assertEquals("Mock color name 2", result.getColors().get(0).getName());
 		assertEquals(3L, result.getColors().get(1).getId());
 		assertEquals("Mock color name 3", result.getColors().get(1).getName());	
+	}
+	
+	public static void assertOutputClientDTO(OutputClientDTO result) {
+		assertEquals(30L, result.getId());
+		assertEquals("Mock client firstName 0 Mock client lastName 0", result.getName());
+		assertEquals("MockClientEmail0@gmail.com", result.getEmail());
+		
+		OutputClientDTO.OutputClientPetDTO resultPet = new OutputClientDTO.OutputClientPetDTO(
+				20L, "Mock pet name 0", "Mock animal name 0"
+				);
+		assertTrue(result.getPets().contains(resultPet));		
+		resultPet = new OutputClientDTO.OutputClientPetDTO(
+				21L, "Mock pet name 1", "Mock animal name 1"
+				);
+		assertTrue(result.getPets().contains(resultPet));
 	}
 }
