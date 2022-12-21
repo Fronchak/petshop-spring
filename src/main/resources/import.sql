@@ -13,7 +13,7 @@ INSERT INTO ANIMAL (name, description) values ('Mouse', 'A mouse is a small rode
 INSERT INTO ANIMAL (name, description) values ('Rabbit', 'Rabbits, also known as bunnies or bunny rabbits, are small mammals in the family Leporidae of the order Lagomorpha');
 INSERT INTO ANIMAL (name, description) values ('Bird', 'Birds are a group of warm-blooded vertebrates constituting the class Aves, characterised by feathers, toothless beaked jaws, the laying of hard-shelled eggs, a high metabolic rate, a four-chambered heart, and a strong yet lightweight skeleton');
 
-INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('Gabriel', 'Fronchak Gmack', 'gabriel@gmail.com', '1234567890', '2000-10-05');
-INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('Alice', 'Fronchak Gmack', 'alice@gmail.com', '1334567890', '1967-03-15');
-INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('Claudia', 'Gmack', 'claudia@gmail.com', '1244567890', '1990-02-28');
-INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('João', 'Gmack', 'joao@gmail.com', '71244567890', '1962-04-17');
+INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('Gabriel', 'Fronchak Gmack', 'gabriel@gmail.com', '12345678910', '2000-10-05');
+INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('Alice', 'Fronchak Gmack', 'alice@gmail.com', '13345678910', '1967-03-15');
+INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('Claudia', 'Gmack', 'claudia@gmail.com', '12445678910', '1990-02-28');
+INSERT INTO CLIENT (first_name, last_name, email, cpf, birth_date) values ('João', 'Gmack', 'joao@gmail.com', '712445678910', '1962-04-17');

@@ -50,7 +50,7 @@ public class ClientMocksFactory {
 	}
 	
 	public static String mockCpf(int i) {
-		return "123456789" + i;
+		return "1234567890" + i;
 	}
 	
 	public static LocalDate mockBirthDate(int i) {

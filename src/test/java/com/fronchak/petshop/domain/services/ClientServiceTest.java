@@ -162,7 +162,7 @@ public class ClientServiceTest {
 		assertEquals("Mock client firstName 1",entitySaved.getFirstName());
 		assertEquals("Mock client lastName 1", entitySaved.getLastName());
 		assertEquals("MockClientEmail1@gmail.com", entitySaved.getEmail());
-		assertEquals("1234567891", entitySaved.getCpf());
+		assertEquals("12345678901", entitySaved.getCpf());
 		assertEquals(LocalDate.of(2022, 12, 2), entitySaved.getBirthDate());
 	}
 	

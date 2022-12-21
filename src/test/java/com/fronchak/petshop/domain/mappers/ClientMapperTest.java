@@ -2,10 +2,8 @@ package com.fronchak.petshop.domain.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +55,7 @@ public class ClientMapperTest {
 		assertEquals("Mock client firstName 0", entity.getFirstName());
 		assertEquals("Mock client lastName 0", entity.getLastName());
 		assertEquals("MockClientEmail0@gmail.com", entity.getEmail());
-		assertEquals("1234567890", entity.getCpf());
+		assertEquals("12345678900", entity.getCpf());
 		assertEquals(LocalDate.of(2022, 12, 1), entity.getBirthDate());
 	}
 	
@@ -73,7 +71,7 @@ public class ClientMapperTest {
 		assertEquals("Mock client firstName 0", entity.getFirstName());
 		assertEquals("Mock client lastName 0", entity.getLastName());
 		assertEquals("MockClientEmail0@gmail.com", entity.getEmail());
-		assertEquals("1234567890", entity.getCpf());
+		assertEquals("12345678900", entity.getCpf());
 		assertEquals(LocalDate.of(2022, 12, 1), entity.getBirthDate());
 	}
 }
