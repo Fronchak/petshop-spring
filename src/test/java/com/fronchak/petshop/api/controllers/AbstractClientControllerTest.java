@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fronchak.petshop.domain.repositories.ClientRepository;
 import com.fronchak.petshop.domain.services.ClientService;
 
 @WebMvcTest(ClientController.class)
@@ -30,6 +31,9 @@ public class AbstractClientControllerTest {
 	
 	@MockBean
 	protected ClientService service;
+	
+	@MockBean
+	protected ClientRepository repository;
 	
 	protected void assertSuccessAndOutputDTO(ResultActions result) throws Exception {
 		assertSuccess(result);
@@ -74,4 +78,89 @@ public class AbstractClientControllerTest {
 		result.andExpect(jsonPath("$.content[2].name").value("Mock client firstName 2 Mock client lastName 2"));
 		result.andExpect(jsonPath("$.content[2].email").value("MockClientEmail2@gmail.com"));
 	}
-}
+	
+	protected void assertBadRequestAndIntegrityError(ResultActions result) throws Exception {
+		assertBadRequest(result);
+		result.andExpect(jsonPath("$.error").value("Integrity error"));
+	}
+	
+	protected void assertBadRequest(ResultActions result) throws Exception {
+		result.andExpect(status().isBadRequest());
+		result.andExpect(jsonPath("$.status").value(400));
+	}
+	
+	protected void assertCreatedAndOutputDTO(ResultActions result) throws Exception {
+		assertCreated(result);
+		assertOutputDTO(result);
+	}
+	
+	protected void assertCreated(ResultActions result) throws Exception {
+		result.andExpect(status().isCreated());
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidEmptyFirstName(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("firstName"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Client's first name cannot be empty"));
+	}
+	
+	protected void assertUnprocessableEntity(ResultActions result) throws Exception {
+		result.andExpect(status().isUnprocessableEntity());
+		result.andExpect(jsonPath("$.status").value(422));
+		result.andExpect(jsonPath("$.error").value("Validation error"));
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidEmptyLastName(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("lastName"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Client's last name cannot be empty"));
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidNullEmail(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("email"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Client's email must be specified"));
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidNotWellFormatedEmail(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("email"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Invalid email format, please try a valid email"));
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidNullCpf(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("cpf"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Client's CPF must be specified"));
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidCpfFormat(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("cpf"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Invalid cpf format, please try a valid cpf (only digits)"));
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidNullBirthDate(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("birthDate"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Client's birth date must be specified"));		
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidNonPastBirthDate(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("birthDate"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Invalid birth date, birth date cannot be a future date"));	
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidRepeatedEmail(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("email"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Invalid email, this email was already registered"));
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidRepeatedCpf(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("cpf"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Invalid cpf, this cpf was already registered"));
+	}
+} 
