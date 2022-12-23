@@ -11,6 +11,7 @@ import com.fronchak.petshop.domain.dtos.pet.InsertPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputAllPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.UpdatePetDTO;
+import com.fronchak.petshop.domain.entities.Client;
 import com.fronchak.petshop.domain.entities.Pet;
 
 public class PetMocksFactory {
@@ -28,6 +29,7 @@ public class PetMocksFactory {
 		mock.setAnimal(AnimalMocksFactory.mockAnimal(i));
 		mock.addColor(ColorMocksFactory.mockColor(0 + 2*i));
 		mock.addColor(ColorMocksFactory.mockColor(1 + 2*i));
+		mock.setOwner(ClientMocksFactory.mockClientWithoutPet(i));
 		return mock;
 	}
 	
@@ -63,6 +65,7 @@ public class PetMocksFactory {
 		mock.setIdAnimal(AnimalMocksFactory.mockId(0));
 		mock.getIdColors().add(ColorMocksFactory.mockId(1));
 		mock.getIdColors().add(ColorMocksFactory.mockId(2));
+		mock.setIdClient(ClientMocksFactory.mockId(i));
 		return mock;
 	}
 	
@@ -88,6 +91,7 @@ public class PetMocksFactory {
 		mock.setAnimal(mockPetAnimalOutputDTO(i));
 		mock.addColor(mockPetColorOutputDTO(0 + 2*i));
 		mock.addColor(mockPetColorOutputDTO(1 + 2*i));
+		mock.setOwner(mockPetClientOutputDTO(i));
 		return mock;
 	}
 	
@@ -102,6 +106,13 @@ public class PetMocksFactory {
 		OutputAllPetDTO.PetColorOutputDTO mock = new OutputAllPetDTO.PetColorOutputDTO();
 		mock.setId(ColorMocksFactory.mockId(i));
 		mock.setName(ColorMocksFactory.mockName(i));
+		return mock;
+	}
+	
+	private static OutputAllPetDTO.PetClientOutputDTO mockPetClientOutputDTO(int i) {
+		OutputAllPetDTO.PetClientOutputDTO mock = new OutputAllPetDTO.PetClientOutputDTO();
+		mock.setId(ClientMocksFactory.mockId(i));
+		mock.setName(ClientMocksFactory.mockName(i));
 		return mock;
 	}
 	
@@ -134,6 +145,7 @@ public class PetMocksFactory {
 		mock.setAnimal(mockPetAnimalOutputDTO(i));
 		mock.addColor(mockPetColorOutputDTO(0 + 2 * i));
 		mock.addColor(mockPetColorOutputDTO(1 + 2 * i));
+		mock.setOwner(mockPetClientOutputDTO(i));
 		return mock;
 	}
 }

@@ -12,6 +12,7 @@ public class OutputAllPetDTO implements Serializable {
 	private String name;
 	private PetAnimalOutputDTO animal;
 	private List<PetColorOutputDTO> colors = new ArrayList<>();
+	private PetClientOutputDTO owner;
 	
 	public Long getId() {
 		return id;
@@ -49,6 +50,14 @@ public class OutputAllPetDTO implements Serializable {
 		colors.add(color);
 	}
 	
+	public PetClientOutputDTO getOwner() {
+		return owner;
+	}
+
+	public void setOwner(PetClientOutputDTO owner) {
+		this.owner = owner;
+	}
+	
 	public static class PetAnimalOutputDTO {
 		
 		private Long id;
@@ -73,6 +82,27 @@ public class OutputAllPetDTO implements Serializable {
 	
 	public static class PetColorOutputDTO {
 		
+		private Long id;
+		private String name;
+		
+		public Long getId() {
+			return id;
+		}
+		
+		public void setId(Long id) {
+			this.id = id;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public void setName(String name) {
+			this.name = name;
+		}
+	}
+	
+	public static class PetClientOutputDTO {
 		private Long id;
 		private String name;
 		

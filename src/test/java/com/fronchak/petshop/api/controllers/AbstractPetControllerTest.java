@@ -51,6 +51,8 @@ public abstract class AbstractPetControllerTest {
 		result.andExpect(jsonPath("$.colors[0].name").value("Mock color name 0"));
 		result.andExpect(jsonPath("$.colors[1].id").value(1L));
 		result.andExpect(jsonPath("$.colors[1].name").value("Mock color name 1"));
+		result.andExpect(jsonPath("$.owner.id").value(30L));
+		result.andExpect(jsonPath("$.owner.name").value("Mock client firstName 0 Mock client lastName 0"));
 	}
 	
 	protected void assertNotFound(ResultActions result) throws Exception {
@@ -123,6 +125,12 @@ public abstract class AbstractPetControllerTest {
 		assertUnprocessableEntity(result);
 		result.andExpect(jsonPath("$.errors[0].fieldName").value("heightInCm"));
 		result.andExpect(jsonPath("$.errors[0].message").value("Pet's height cannot be bigger than 200 cm"));
+	}
+	
+	protected void assertUnprocessableEntityAndInvalidNullIdClient(ResultActions result) throws Exception {
+		assertUnprocessableEntity(result);
+		result.andExpect(jsonPath("$.errors[0].fieldName").value("idClient"));
+		result.andExpect(jsonPath("$.errors[0].message").value("Pet's owner must be specified"));
 	}
 	
 	protected void assertBadRequestAndDatabaseReferenceException(ResultActions result) throws Exception {

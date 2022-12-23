@@ -42,6 +42,10 @@ public class Pet implements Serializable {
 			)
 	private List<Color> colors = new ArrayList<>();
 
+	@ManyToOne
+	@JoinColumn(name = "id_client")
+	private Client owner;
+	
 	public Pet() {}
 	
 	public Pet(Long id) {
@@ -98,6 +102,14 @@ public class Pet implements Serializable {
 			throw new ValidationException("Validation error", fieldMessage);
 		}
 		colors.add(color);
+	}
+	
+	public Client getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Client owner) {
+		this.owner = owner;
 	}
 
 	@Override

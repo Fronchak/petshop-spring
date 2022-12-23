@@ -77,6 +77,8 @@ public class CustomizeAsserts {
 		assertEquals("Mock color name 0", result.getColors().get(0).getName());
 		assertEquals(1L, result.getColors().get(1).getId());
 		assertEquals("Mock color name 1", result.getColors().get(1).getName());
+		assertEquals(30L, result.getOwner().getId());
+		assertEquals("Mock client firstName 0 Mock client lastName 0", result.getOwner().getName());
 	}
 	
 	public static void assertOutputAllPetDTOPage(Page<OutputAllPetDTO> resultPage) {
@@ -90,7 +92,9 @@ public class CustomizeAsserts {
 		assertEquals(0L, result.getColors().get(0).getId());
 		assertEquals("Mock color name 0", result.getColors().get(0).getName());
 		assertEquals(1L, result.getColors().get(1).getId());
-		assertEquals("Mock color name 1", result.getColors().get(1).getName());		
+		assertEquals("Mock color name 1", result.getColors().get(1).getName());	
+		assertEquals(30L, result.getOwner().getId());
+		assertEquals("Mock client firstName 0 Mock client lastName 0", result.getOwner().getName());
 		
 		result = resultList.get(1);
 		assertEquals(21L, result.getId());
@@ -101,6 +105,8 @@ public class CustomizeAsserts {
 		assertEquals("Mock color name 2", result.getColors().get(0).getName());
 		assertEquals(3L, result.getColors().get(1).getId());
 		assertEquals("Mock color name 3", result.getColors().get(1).getName());	
+		assertEquals(31L, result.getOwner().getId());
+		assertEquals("Mock client firstName 1 Mock client lastName 1", result.getOwner().getName());
 	}
 	
 	public static void assertOutputClientDTO(OutputClientDTO result) {

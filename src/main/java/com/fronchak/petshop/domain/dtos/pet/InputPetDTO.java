@@ -33,6 +33,9 @@ public class InputPetDTO implements Serializable {
 	@NotEmpty(message = "Pet must have at least one color")
 	private List<@NotNull(message = "Pet's color cannot be null") Long> idColors = new ArrayList<>();
 	
+	@NotNull(message = "Pet's owner must be specified")
+	private Long idClient;
+	
 	public String getName() {
 		return name;
 	}
@@ -71,5 +74,13 @@ public class InputPetDTO implements Serializable {
 	
 	public void addIdColor(Long idColor) {
 		idColors.add(idColor);
+	}
+
+	public Long getIdClient() {
+		return idClient;
+	}
+
+	public void setIdClient(Long idClient) {
+		this.idClient = idClient;
 	}
 }

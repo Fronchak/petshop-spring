@@ -63,6 +63,8 @@ public class PetControllerTest extends AbstractPetControllerTest {
 		result.andExpect(jsonPath("$.content[0].colors[0].name").value("Mock color name 0"));
 		result.andExpect(jsonPath("$.content[0].colors[1].id").value(1L));
 		result.andExpect(jsonPath("$.content[0].colors[1].name").value("Mock color name 1"));
+		result.andExpect(jsonPath("$.content[0].owner.id").value(30L));
+		result.andExpect(jsonPath("$.content[0].owner.name").value("Mock client firstName 0 Mock client lastName 0"));
 		
 		result.andExpect(jsonPath("$.content[1].id").value(21L));
 		result.andExpect(jsonPath("$.content[1].name").value("Mock pet name 1"));
@@ -72,6 +74,8 @@ public class PetControllerTest extends AbstractPetControllerTest {
 		result.andExpect(jsonPath("$.content[1].colors[0].name").value("Mock color name 2"));
 		result.andExpect(jsonPath("$.content[1].colors[1].id").value(3L));
 		result.andExpect(jsonPath("$.content[1].colors[1].name").value("Mock color name 3"));
+		result.andExpect(jsonPath("$.content[1].owner.id").value(31L));
+		result.andExpect(jsonPath("$.content[1].owner.name").value("Mock client firstName 1 Mock client lastName 1"));
 	}
 	
 	@Test

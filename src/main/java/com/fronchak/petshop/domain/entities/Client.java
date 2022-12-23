@@ -36,8 +36,7 @@ public class Client implements Serializable {
 	@Column(name = "birth_date")
 	private LocalDate birthDate;
 	
-	@OneToMany
-	@JoinColumn(name = "id_client")
+	@OneToMany(mappedBy = "owner")
 	private Set<Pet> pets = new HashSet<>();
 	
 	public Long getId() {

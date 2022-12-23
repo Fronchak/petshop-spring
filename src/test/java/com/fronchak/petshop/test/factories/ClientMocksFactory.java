@@ -141,4 +141,19 @@ public class ClientMocksFactory {
 		mock.setEmail(mockEmail(i));
 		return mock;
 	}
+	
+	public static Client mockClientWithoutPet() {
+		return mockClientWithoutPet(0);
+	}
+	
+	public static Client mockClientWithoutPet(int i) {
+		Client mock = new Client();
+		mock.setId(mockId(i));
+		mock.setFirstName(mockFirstName(i));
+		mock.setLastName(mockLastName(i));
+		mock.setEmail(mockEmail(i));
+		mock.setCpf(mockCpf(i));
+		mock.setBirthDate(mockBirthDate(i));
+		return mock;
+	}
 }

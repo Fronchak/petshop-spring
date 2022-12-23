@@ -151,4 +151,12 @@ public class PetControllerUpdateTest extends AbstractPetControllerTest {
 		performPutMethod(VALID_ID);
 		assertUnprocessableEntityAndInvalidEmptyIdColors(result);
 	}
+	
+	@Test
+	public void updateShouldReturnUnprocessableEntityWhenIdClientIsNull() throws Exception {
+		updateDTO.setIdClient(null);
+		mapperUpdateDTOToJson();
+		performPutMethod(VALID_ID);
+		assertUnprocessableEntityAndInvalidNullIdClient(result);
+	}
 }

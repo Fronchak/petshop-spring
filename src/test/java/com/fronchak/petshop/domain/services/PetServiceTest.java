@@ -35,6 +35,7 @@ import com.fronchak.petshop.domain.dtos.pet.OutputAllPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.UpdatePetDTO;
 import com.fronchak.petshop.domain.entities.Animal;
+import com.fronchak.petshop.domain.entities.Client;
 import com.fronchak.petshop.domain.entities.Color;
 import com.fronchak.petshop.domain.entities.Pet;
 import com.fronchak.petshop.domain.exceptions.DatabaseException;
@@ -44,9 +45,11 @@ import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.petshop.domain.exceptions.ValidationException;
 import com.fronchak.petshop.domain.mappers.PetMapper;
 import com.fronchak.petshop.domain.repositories.AnimalRepository;
+import com.fronchak.petshop.domain.repositories.ClientRepository;
 import com.fronchak.petshop.domain.repositories.ColorRepository;
 import com.fronchak.petshop.domain.repositories.PetRepository;
 import com.fronchak.petshop.test.factories.AnimalMocksFactory;
+import com.fronchak.petshop.test.factories.ClientMocksFactory;
 import com.fronchak.petshop.test.factories.ColorMocksFactory;
 import com.fronchak.petshop.test.factories.PetMocksFactory;
 import com.fronchak.petshop.util.CustomizeAsserts;
@@ -69,6 +72,9 @@ public class PetServiceTest {
 	
 	@Mock
 	private ColorRepository colorRepository;
+	
+	@Mock
+	private ClientRepository clientRepository;
 	
 	@Mock
 	private PetMapper mapper;
@@ -118,11 +124,13 @@ public class PetServiceTest {
 		Animal animal = AnimalMocksFactory.mockAnimal();
 		Color color1 = ColorMocksFactory.mockColor(0);
 		Color color2 = ColorMocksFactory.mockColor(1);
+		Client client = ClientMocksFactory.mockClient();
 		
 		doNothing().when(mapper).copyDTOToEntity(eq(insertDTO), any(Pet.class));
 		when(animalRepository.getReferenceById(insertDTO.getIdAnimal())).thenReturn(animal);
 		when(colorRepository.getReferenceById(insertDTO.getIdColors().get(0))).thenReturn(color1);
 		when(colorRepository.getReferenceById(insertDTO.getIdColors().get(1))).thenReturn(color2);
+		when(clientRepository.getReferenceById(insertDTO.getIdClient())).thenReturn(client);
 		when(repository.save(any(Pet.class))).thenReturn(outputEntity);
 		when(mapper.convertEntityToOutputDTO(outputEntity)).thenReturn(outputDTO);
 		
@@ -135,6 +143,9 @@ public class PetServiceTest {
 		assertEquals(10L, entity.getAnimal().getId());
 		assertEquals(0L, entity.getColors().get(0).getId());
 		assertEquals(1L, entity.getColors().get(1).getId());
+		assertEquals(30L, entity.getOwner().getId());
+		
+		verify(clientRepository, times(1)).getReferenceById(insertDTO.getIdClient());
 		
 		CustomizeAsserts.assertOutputPetDTO(result);
 	}
@@ -144,9 +155,11 @@ public class PetServiceTest {
 		InsertPetDTO insertDTO = PetMocksFactory.mockInsertPetDTO();
 		Color color1 = ColorMocksFactory.mockColor(0);
 		Color color2 = ColorMocksFactory.mockColor(1);
+		Client client = ClientMocksFactory.mockClient();
 		
 		when(colorRepository.getReferenceById(insertDTO.getIdColors().get(0))).thenReturn(color1);
 		when(colorRepository.getReferenceById(insertDTO.getIdColors().get(1))).thenReturn(color2);
+		when(clientRepository.getReferenceById(insertDTO.getIdClient())).thenReturn(client);
 		when(repository.save(any(Pet.class))).thenThrow(DataIntegrityViolationException.class);
 		assertThrows(DatabaseReferenceException.class, () -> service.save(insertDTO));
 	}
@@ -181,12 +194,14 @@ public class PetServiceTest {
 		Animal animal = AnimalMocksFactory.mockAnimal();
 		Color color1 = ColorMocksFactory.mockColor(0);
 		Color color2 = ColorMocksFactory.mockColor(1);
+		Client client = ClientMocksFactory.mockClient();
 		
 		doNothing().when(mapper).copyDTOToEntity(eq(updateDTO), any(Pet.class));
 		when(repository.getReferenceById(VALID_ID)).thenReturn(entity);
 		when(animalRepository.getReferenceById(updateDTO.getIdAnimal())).thenReturn(animal);
 		when(colorRepository.getReferenceById(updateDTO.getIdColors().get(0))).thenReturn(color1);
 		when(colorRepository.getReferenceById(updateDTO.getIdColors().get(1))).thenReturn(color2);
+		when(clientRepository.getReferenceById(updateDTO.getIdClient())).thenReturn(client);
 		when(repository.save(entity)).thenReturn(outputEntity);
 		when(mapper.convertEntityToOutputDTO(outputEntity)).thenReturn(outputDTO);
 		
@@ -200,6 +215,9 @@ public class PetServiceTest {
 		assertEquals(10L, entityUpdated.getAnimal().getId());
 		assertEquals(0L, entityUpdated.getColors().get(0).getId());
 		assertEquals(1L, entityUpdated.getColors().get(1).getId());
+		assertEquals(30L, entityUpdated.getOwner().getId());
+		
+		verify(clientRepository, times(1)).getReferenceById(updateDTO.getIdClient());
 		
 		CustomizeAsserts.assertOutputPetDTO(result);
 	}

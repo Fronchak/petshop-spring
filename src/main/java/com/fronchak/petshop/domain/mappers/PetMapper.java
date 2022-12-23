@@ -10,6 +10,7 @@ import com.fronchak.petshop.domain.dtos.pet.InputPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputAllPetDTO;
 import com.fronchak.petshop.domain.dtos.pet.OutputPetDTO;
 import com.fronchak.petshop.domain.entities.Animal;
+import com.fronchak.petshop.domain.entities.Client;
 import com.fronchak.petshop.domain.entities.Color;
 import com.fronchak.petshop.domain.entities.Pet;
 
@@ -24,6 +25,7 @@ public class PetMapper {
 		dto.setHeightInCm(entity.getHeightInCm());
 		dto.setAnimal(convertEntityToPetAnimalOutputDTO(entity.getAnimal()));
 		dto.setColors(convertEntityListToPetColorOutputDTOList(entity.getColors()));
+		dto.setOwner(convertEntityToPetClientOutputDTO(entity.getOwner()));
 		return dto;
 	}
 	
@@ -37,14 +39,20 @@ public class PetMapper {
 	private List<OutputAllPetDTO.PetColorOutputDTO> convertEntityListToPetColorOutputDTOList(List<Color> list) {
 		return list.stream()
 			.map(entity -> convertEntityToPetColorOutputDTO(entity))
-			.collect(Collectors.toList());
-			
+			.collect(Collectors.toList());	
 	}
 	
 	private OutputAllPetDTO.PetColorOutputDTO convertEntityToPetColorOutputDTO(Color entity) {
 		OutputAllPetDTO.PetColorOutputDTO dto = new OutputAllPetDTO.PetColorOutputDTO();
 		dto.setId(entity.getId());
 		dto.setName(entity.getName());
+		return dto;
+	}
+	
+	private OutputAllPetDTO.PetClientOutputDTO convertEntityToPetClientOutputDTO(Client entity) {
+		OutputAllPetDTO.PetClientOutputDTO dto = new OutputAllPetDTO.PetClientOutputDTO();
+		dto.setId(entity.getId());
+		dto.setName(entity.getFirstName() + " " + entity.getLastName());
 		return dto;
 	}
 	
@@ -64,6 +72,7 @@ public class PetMapper {
 		mock.setName(entity.getName());
 		mock.setAnimal(convertEntityToPetAnimalOutputDTO(entity.getAnimal()));
 		mock.setColors(convertEntityListToPetColorOutputDTOList(entity.getColors()));
+		mock.setOwner(convertEntityToPetClientOutputDTO(entity.getOwner()));
 		return mock;
 	}
 }

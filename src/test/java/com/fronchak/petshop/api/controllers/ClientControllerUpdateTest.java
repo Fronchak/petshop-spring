@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fronchak.petshop.domain.dtos.client.OutputClientDTO;
 import com.fronchak.petshop.domain.dtos.client.UpdateClientDTO;
+import com.fronchak.petshop.domain.entities.Client;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.petshop.test.factories.ClientMocksFactory;
 
@@ -155,5 +156,41 @@ public class ClientControllerUpdateTest extends AbstractClientControllerTest {
 		updateDTO.setBirthDate(LocalDate.of(2030, 1, 1));
 		mapperUpdateDTOAndPerformPostMethod(VALID_ID);
 		assertUnprocessableEntityAndInvalidNonPastBirthDate(result);
+	}
+	
+	@Test
+	public void updateShouldReturnUnprocessableEntityWhenThereIsAnotherClientWithTheSameEmailAlreadyRegister() throws Exception {
+		Client client = new Client();
+		client.setId(100L);
+		when(repository.findByEmail(updateDTO.getEmail())).thenReturn(client);
+		mapperUpdateDTOAndPerformPostMethod(VALID_ID);
+		assertUnprocessableEntityAndInvalidRepeatedEmail(result);
+	}
+	
+	@Test
+	public void updateShouldReturnSuccessWhenTheEntityWithSameEmailHasTheSameIdOfTheUpdatedEntity() throws Exception {
+		Client client = new Client();
+		client.setId(VALID_ID);
+		when(repository.findByEmail(updateDTO.getEmail())).thenReturn(client);
+		mapperUpdateDTOAndPerformPostMethod(VALID_ID);
+		assertSuccessAndOutputDTO(result);
+	}
+	
+	@Test
+	public void updateShouldReturnUnprocessableEntityWhenThereIsAnotherClientWithTheSameCpfRegister() throws Exception {
+		Client client = new Client();
+		client.setId(100L);
+		when(repository.findByCpf(updateDTO.getCpf())).thenReturn(client);
+		mapperUpdateDTOAndPerformPostMethod(DEPENDENT_ID);
+		assertUnprocessableEntityAndInvalidRepeatedCpf(result);
+	}
+	
+	@Test
+	public void updateShouldReturnSuccessWhenTheEntityWithTheSameCpfHasTheSameIdOfTheUpdatedEntity() throws Exception {
+		Client client = new Client();
+		client.setId(VALID_ID);
+		when(repository.findByCpf(updateDTO.getCpf())).thenReturn(client);
+		mapperUpdateDTOAndPerformPostMethod(VALID_ID);
+		assertSuccessAndOutputDTO(result);
 	}
 }

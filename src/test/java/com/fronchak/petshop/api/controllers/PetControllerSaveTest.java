@@ -129,6 +129,14 @@ public class PetControllerSaveTest extends AbstractPetControllerTest {
 	}
 	
 	@Test
+	public void assertUnprocessableEntityWhenIdClientIsNull() throws Exception {
+		insertDTO.setIdClient(null);
+		mapperInsertDTOToJson();
+		performPostMethod();
+		assertUnprocessableEntityAndInvalidNullIdClient(result);
+	}
+	
+	@Test
 	public void saveShouldReturnBadRequestWhenServiceThrowDatabaseReferenceException() throws Exception {
 		when(service.save(any(InsertPetDTO.class))).thenThrow(DatabaseReferenceException.class);
 		mapperInsertDTOToJson();

@@ -21,6 +21,7 @@ import com.fronchak.petshop.domain.exceptions.DatabaseReferenceException;
 import com.fronchak.petshop.domain.exceptions.ResourceNotFoundException;
 import com.fronchak.petshop.domain.mappers.PetMapper;
 import com.fronchak.petshop.domain.repositories.AnimalRepository;
+import com.fronchak.petshop.domain.repositories.ClientRepository;
 import com.fronchak.petshop.domain.repositories.ColorRepository;
 import com.fronchak.petshop.domain.repositories.PetRepository;
 
@@ -35,6 +36,9 @@ public class PetService {
 	
 	@Autowired
 	private ColorRepository colorRepository;
+	
+	@Autowired
+	private ClientRepository clientRepository;
 	
 	@Autowired
 	private PetMapper mapper;
@@ -71,6 +75,7 @@ public class PetService {
 		entity.setAnimal(animalRepository.getReferenceById(dto.getIdAnimal()));
 		entity.getColors().clear();
 		dto.getIdColors().forEach(id -> entity.addColor(colorRepository.getReferenceById(id)));;
+		entity.setOwner(clientRepository.getReferenceById(dto.getIdClient()));
 	}
 	
 	@Transactional
